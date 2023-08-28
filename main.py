@@ -296,7 +296,6 @@ class player:
     
     def check_correct_side(self):
         global ANIMATION_LIST
-        global PUSHBOXES
         #print(f"[{self.x}, {self.y}]")
         if self.isJump == False:
             if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
