@@ -49,7 +49,7 @@ ANIMATION_LIST = [
     ]
 ]
 
-#Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2], [hitbox x1, hitbox x2, hitbox y1, hitbox y2]]
+#Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2], [hitbox x1, hitbox x2, hitbox y1, hitbox y2, hitbox damage]]
 
 
 ANIMATION_LIST_LABEL = [
