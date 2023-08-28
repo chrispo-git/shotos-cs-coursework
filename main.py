@@ -89,6 +89,13 @@ ANIMATION_LIST = [
 
 #Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2], [hitbox x1, hitbox x2, hitbox y1, hitbox y2, hitbox damage]]
 
+def get_anim_ID(name: str) -> int:
+        global ANIMATION_LIST_LABEL
+        try:
+            value = ANIMATION_LIST_LABEL.index(name)
+            return value
+        except ValueError:
+            return -1
 
 ANIMATION_LIST_LABEL = [
     "Idle",
@@ -101,19 +108,17 @@ ANIMATION_LIST_LABEL = [
     "Air"
 ]
 
+ACTIONABLE_LIST = [
+    get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB"), 
+    get_anim_ID("Crouch"), get_anim_ID("CrouchWait"), get_anim_ID("CrouchRv")
+]
+
 #Collisions!
 PUSHBOXES = [11.5,-25,14]
 PUSHING_FORCE = 5
 char_pos = [[0,0], [0,0]]
 hurtbox = []
 
-def get_anim_ID(name: str) -> int:
-        global ANIMATION_LIST_LABEL
-        try:
-            value = ANIMATION_LIST_LABEL.index(name)
-            return value
-        except ValueError:
-            return -1
         
 
 screen = turtle.Screen()
@@ -183,25 +188,30 @@ class player:
         self.turtle.shape(self.sprite)
         #print(self.turtle.shape())
         
-        if self.frame+1 >= anim_length: #Returns 
+        if self.frame+1 >= anim_length: #Returns to default anim for state
             self.frame = 0
-            if self.isJump:
-                if self.animListID == get_anim_ID("JumpSquat"):
-                    self.moveYThisFrame = JUMP_INITAL
-                self.set_new_anim_by_ID(get_anim_ID("Air"))
-                return
-            if self.isCrouch:
-                self.set_new_anim_by_ID(get_anim_ID("CrouchWait"))
-                return
             self.set_new_anim_by_ID()
         else:
             self.frame += 1
 
     
     
-    def set_new_anim_by_ID(self, id=0, frame=0):
+    def set_new_anim_by_ID(self, id=-2, frame=0):
         if id == -1:
             return
+        if id == -2:
+            self.frame = frame
+            if self.isJump:
+                if self.animListID == get_anim_ID("JumpSquat"):
+                    self.moveYThisFrame = JUMP_INITAL
+                self.animListID = get_anim_ID("Air")
+                return
+            elif self.isCrouch:
+                    self.animListID = get_anim_ID("CrouchWait")
+                    return
+            else:
+                    self.animListID = get_anim_ID("Idle")
+                    return
         self.frame = frame
         self.animListID = id
 
@@ -296,8 +306,9 @@ class player:
     
     def check_correct_side(self):
         global ANIMATION_LIST
+        global ACTIONABLE_LIST
         #print(f"[{self.x}, {self.y}]")
-        if self.isJump == False:
+        if self.isJump == False and self.animListID in ACTIONABLE_LIST:
             if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
                 self.is_left = False
                 self.set_new_anim_by_ID()
