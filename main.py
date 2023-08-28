@@ -110,7 +110,6 @@ class player:
         self.sprite = "sprites/Idle_0.gif"
 
         #Turtle Setup
-        
         self.turtle = turtle.Turtle()
         self.turtle.speed(0)
         self.turtle.penup()
