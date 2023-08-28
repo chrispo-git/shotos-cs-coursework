@@ -49,12 +49,22 @@ ANIMATION_LIST = [
     ],
     [ #Crouch
         ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,2], None],
         ["sprites/F00_Crouch_1.gif", [-11.5,11.5,-25,2], None]
     ],
     [ #CrouchWait
         ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
         ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None]
+    ],
+    [ #CrouchRv
+        ["sprites/F00_Crouch_1.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None]
     ]
 ]
 
@@ -66,7 +76,8 @@ ANIMATION_LIST_LABEL = [
     "WalkF",
     "WalkB",
     "Crouch",
-    "CrouchWait"
+    "CrouchWait",
+    "CrouchRv"
 ]
 
 #Collisions!
@@ -112,6 +123,7 @@ class player:
         self.isJump = False
         self.isHitstun = False
         self.is_left = Left
+        self.isCrouch = False
         self.moveXThisFrame = 0.0
         self.moveYThisFrame = 0.0
 
@@ -144,8 +156,12 @@ class player:
         
         if self.frame+1 >= anim_length:
             self.frame = 0
-            if self.isJump == False:
-                self.set_new_anim_by_ID()
+            if self.isJump:
+                return
+            if self.isCrouch:
+                self.set_new_anim_by_ID(get_anim_ID("CrouchWait"))
+                return
+            self.set_new_anim_by_ID()
         else:
             self.frame += 1
 
@@ -164,7 +180,8 @@ class player:
         global WALK_SPEED
         #print(f"[{self.x}, {self.y}]")
         if self.isJump == False:
-            self.moveXThisFrame = WALK_SPEED
+            if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB")]:
+                self.moveXThisFrame = WALK_SPEED
             if self.is_left == False: #If facing left
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkB")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
@@ -181,7 +198,8 @@ class player:
         global ANIMATION_LIST
         global WALK_SPEED
         if self.isJump == False:
-            self.moveXThisFrame = -WALK_SPEED
+            if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB")]:
+                self.moveXThisFrame = -WALK_SPEED
             if self.is_left == True: #If facing left
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkB")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
@@ -192,6 +210,21 @@ class player:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
                 if self.animListID == get_anim_ID("WalkB") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
+                    
+    def down(self):
+        global ANIMATION_LIST
+        #print(f"[{self.x}, {self.y}]")
+        if self.isJump == False:
+            if self.isCrouch == False and self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB")]:
+                self.isCrouch = True
+                self.set_new_anim_by_ID(get_anim_ID("Crouch"))
+                
+    def uncrouch(self):
+        global ANIMATION_LIST
+        #print(f"[{self.x}, {self.y}]")
+        if self.isCrouch == True and self.animListID in [get_anim_ID("CrouchWait")]:
+                self.isCrouch = False
+                self.set_new_anim_by_ID(get_anim_ID("CrouchRv"))
     
     def check_correct_side(self):
         global ANIMATION_LIST
@@ -211,16 +244,22 @@ class player:
             self.check_correct_side()
             self.animate()
 
-            if keyboard.is_pressed(self.controls[0]):
+            if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
                 self.left()
             elif (self.animListID == get_anim_ID("WalkF") and self.is_left != False) or (self.animListID == get_anim_ID("WalkB") and self.is_left != True):
                 self.set_new_anim_by_ID()
 
 
-            if keyboard.is_pressed(self.controls[1]):
+            if keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
                 self.right()
             elif (self.animListID == get_anim_ID("WalkF") and self.is_left != True) or (self.animListID == get_anim_ID("WalkB") and self.is_left != False):
                 self.set_new_anim_by_ID()
+
+                
+            if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
+                self.down()
+            elif self.isCrouch:
+                self.uncrouch()
 
 
             if self.moveXThisFrame != 0 or self.moveYThisFrame != 0:
@@ -239,11 +278,11 @@ class player:
                 right_pushbox = self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])  < 105 and self.is_left
                 top_pushbox = self.y - (char_pos[-(self.playerNum)][1] + PUSHBOXES[2])  < 105
                 bottom_pushbox =  (char_pos[-(self.playerNum)][1] + PUSHBOXES[1]) - self.y  < 105
-                if top_pushbox and bottom_pushbox:
-                    print(f"same height: [{(char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x}, {self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])}]")
-                    print(f"X Pos for other one: {char_pos[-(self.playerNum)][0]}")
+                #if top_pushbox and bottom_pushbox:
+                    #print(f"same height: [{(char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x}, {self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])}]")
+                    #print(f"X Pos for other one: {char_pos[-(self.playerNum)][0]}")
                 if (left_pushbox or right_pushbox) and (top_pushbox and bottom_pushbox):
-                    print("pushing!")
+                    #print("pushing!")
                     if (self.moveXThisFrame > 0 and left_pushbox) or (self.moveXThisFrame < 0 and right_pushbox):
                         newXVal = x
                     
@@ -274,8 +313,8 @@ p1 = player(
 p2 = player(
     2,
     150, 0,
-    ["j", "l", "k", "i", ";", "'"],
-    False
+    ["j", "l", "i", "k", ";", "'"],
+    True
 )
 prev_delay = 0.0
 while True:
