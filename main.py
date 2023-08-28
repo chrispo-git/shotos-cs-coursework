@@ -12,7 +12,8 @@ image_reverser.reverse()
 #CONSTANTS
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
-BOX_SIZE = [640, 360]
+BOX_SIZE = [330, 360]
+FRAME_LENGTH = 60.0
 
 
 #Character constants
@@ -22,22 +23,30 @@ SCALE = 5
 ANIMATION_LIST = [
     
     [ #Idle
-        ["sprites/Idle_0.gif", [18,41,0,36], None],
-        ["sprites/Idle_0.gif", [18,41,0,36], None],
-        ["sprites/Idle_1.gif", [18,41,0,36], None],
-        ["sprites/Idle_2.gif", [18,41,0,36], None],
-        ["sprites/Idle_2.gif", [18,41,0,36], None],
-        ["sprites/Idle_3.gif", [18,41,0,36], None],
-        ["sprites/Idle_4.gif", [18,41,0,36], None]
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/Idle_1.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/Idle_2.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/Idle_2.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/Idle_3.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/Idle_4.gif", [-11.5,11.5,-25,14], None]
     ],
     [ #WalkF
-        ["sprites/F00_Forward_0.gif", [18,41,0,36], None],
-        ["sprites/F00_Forward_1.gif", [18,41,0,36], None],
-        ["sprites/F00_Forward_2.gif", [18,41,0,36], None],
-        ["sprites/F00_Forward_3.gif", [18,41,0,36], None],
-        ["sprites/F00_Forward_4.gif", [18,41,0,36], None],
-        ["sprites/F00_Forward_5.gif", [18,41,0,36], None]
+        ["sprites/F00_Forward_0.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Forward_1.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Forward_2.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Forward_3.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Forward_4.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Forward_5.gif", [-11.5,11.5,-25,14], None]
     ],
+    [ #WalkB
+        ["sprites/F00_Backward_0.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Backward_1.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Backward_2.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Backward_3.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Backward_4.gif", [-11.5,11.5,-25,14], None],
+        ["sprites/F00_Backward_5.gif", [-11.5,11.5,-25,14], None]
+    ]
 ]
 
 #Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2], [hitbox x1, hitbox x2, hitbox y1, hitbox y2]]
@@ -48,7 +57,14 @@ ANIMATION_LIST_LABEL = [
     "WalkF",
     "WalkB"
 ]
+
+#Collisions!
+PUSHBOXES = [-11.5,11.5,-25,14]
+char_pos = [[0,0], [0,0]]
+hurtbox = []
+
 def get_anim_ID(name: str) -> int:
+        global ANIMATION_LIST_LABEL
         try:
             value = ANIMATION_LIST_LABEL.index(name)
             return value
@@ -59,6 +75,7 @@ def get_anim_ID(name: str) -> int:
 screen = turtle.Screen()
 screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
 screen.bgcolor("white")
+#screen.delay(17)
 for i in ["sprites", "reverse_sprites"]:
     for root, dirs, files in os.walk(i):
         print(files)
@@ -82,7 +99,8 @@ class player:
         self.x = x
         self.y = y
         self.isJump = False
-        self.Left = Left
+        self.isHitstun = False
+        self.is_left = Left
         self.moveXThisFrame = 0.0
         self.moveYThisFrame = 0.0
 
@@ -103,10 +121,11 @@ class player:
         self.controls = controls
 
     def animate(self):
+        global ANIMATION_LIST
         anim = ANIMATION_LIST[self.animListID]
         anim_length = len(anim)
         sprite = anim[self.frame][0]
-        if self.Left == True:
+        if self.is_left == True:
             sprite = sprite.replace("sprites", "reverse_sprites")
         self.sprite = sprite
         #print(self.sprite)
@@ -131,44 +150,62 @@ class player:
 
     
     def right(self):
+        global ANIMATION_LIST
+        global WALK_SPEED
         #print(f"[{self.x}, {self.y}]")
         if self.isJump == False:
             self.moveXThisFrame = WALK_SPEED
-            if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkB")]:
-                self.set_new_anim_by_ID(get_anim_ID("WalkF"))
-            if self.animListID == get_anim_ID("WalkF") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
-                self.set_new_anim_by_ID(get_anim_ID("WalkF"))
+            if self.is_left == False: #If facing left
+                if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkB")]:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkF"))
+                if self.animListID == get_anim_ID("WalkF") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkF"))
+            else:
+                if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkB"))
+                if self.animListID == get_anim_ID("WalkB") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkB"))
 
 
     def left(self):
+        global ANIMATION_LIST
+        global WALK_SPEED
         if self.isJump == False:
             self.moveXThisFrame = -WALK_SPEED
+            if self.is_left == True: #If facing left
+                if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkB")]:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkF"))
+                if self.animListID == get_anim_ID("WalkF") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkF"))
+            else:
+                if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkB"))
+                if self.animListID == get_anim_ID("WalkB") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
+                    self.set_new_anim_by_ID(get_anim_ID("WalkB"))
     
     def update(self):
             self.animate()
 
-
             if keyboard.is_pressed(self.controls[0]):
                 self.left()
-            elif (self.animListID == get_anim_ID("WalkF") and self.Left == True) or (self.animListID == get_anim_ID("WalkB") and self.Left == False):
+            elif (self.animListID == get_anim_ID("WalkF") and self.is_left != False) or (self.animListID == get_anim_ID("WalkB") and self.is_left != True):
                 self.set_new_anim_by_ID()
 
 
             if keyboard.is_pressed(self.controls[1]):
                 self.right()
-            elif (self.animListID == get_anim_ID("WalkF") and self.Left == False) or (self.animListID == get_anim_ID("WalkB") and self.Left == True):
+            elif (self.animListID == get_anim_ID("WalkF") and self.is_left != True) or (self.animListID == get_anim_ID("WalkB") and self.is_left != False):
                 self.set_new_anim_by_ID()
 
 
             if self.moveXThisFrame != 0 or self.moveYThisFrame != 0:
-                newXVal = 0
-                newYVal = 0
                 x = self.x
                 y = self.y
-                if abs(x+self.moveXThisFrame) < BOX_SIZE[0]:
+                newXVal = x
+                newYVal = y
+                if (x+self.moveXThisFrame) < BOX_SIZE[0] or -(x+self.moveXThisFrame) > BOX_SIZE[0]:
                     newXVal = x+self.moveXThisFrame
-                    self.turtle.goto(newXVal, newYVal)
-                if abs(y+self.moveXThisFrame) < BOX_SIZE[0]:
+                if y+self.moveXThisFrame >= 0:
                     newYVal = y+self.moveYThisFrame
                 #print(f"{newXVal}, {newYVal}")
                 self.x = newXVal
@@ -176,6 +213,10 @@ class player:
                 self.turtle.setpos(self.x, self.y)
                 self.moveXThisFrame = 0.0
                 self.moveYThisFrame = 0.0
+
+            char_pos[self.playerNum - 1][0] = self.x 
+            char_pos[self.playerNum - 1][1] = self.y 
+            #print(char_pos)
 
 def init_controls(players: list):
     for i in players:
@@ -191,13 +232,23 @@ p1 = player(
     False
 )
 p2 = player(
-    1,
+    2,
     150, 0,
     ["j", "l", "k", "i", ";", "'"],
     True
 )
+prev_delay = 0.0
 while True:
+    if prev_delay > FRAME_LENGTH*2:
+        pass
+        print("Frame Skip! Performance aint looking good")
+    start = time.time()
     p1.update()
     p2.update()
-    time.sleep(1.0/60.0)
+    end = time.time()
+    new_delay = (end-start)*10**3
+    print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
+    if (new_delay/1000) < FRAME_LENGTH/1000:
+        time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
+    prev_delay = new_delay
 screen.mainloop()
