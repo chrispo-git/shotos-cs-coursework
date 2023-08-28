@@ -46,6 +46,15 @@ ANIMATION_LIST = [
         ["sprites/F00_Backward_3.gif", [-11.5,11.5,-25,14], None],
         ["sprites/F00_Backward_4.gif", [-11.5,11.5,-25,14], None],
         ["sprites/F00_Backward_5.gif", [-11.5,11.5,-25,14], None]
+    ],
+    [ #Crouch
+        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_Crouch_1.gif", [-11.5,11.5,-25,2], None]
+    ],
+    [ #CrouchWait
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
     ]
 ]
 
@@ -55,11 +64,13 @@ ANIMATION_LIST = [
 ANIMATION_LIST_LABEL = [
     "Idle",
     "WalkF",
-    "WalkB"
+    "WalkB",
+    "Crouch",
+    "CrouchWait"
 ]
 
 #Collisions!
-PUSHBOXES = [-11.5,11.5,-25,14]
+PUSHBOXES = [11.5,-25,14]
 char_pos = [[0,0], [0,0]]
 hurtbox = []
 
@@ -182,7 +193,22 @@ class player:
                 if self.animListID == get_anim_ID("WalkB") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
     
+    def check_correct_side(self):
+        global ANIMATION_LIST
+        global PUSHBOXES
+        #print(f"[{self.x}, {self.y}]")
+        if self.isJump == False:
+            if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
+                self.is_left = False
+                self.set_new_anim_by_ID()
+            if self.is_left == False and self.x > char_pos[-(self.playerNum)][0]:
+                self.is_left = True
+                self.set_new_anim_by_ID()
+    
     def update(self):
+            global PUSHBOXES
+
+            self.check_correct_side()
             self.animate()
 
             if keyboard.is_pressed(self.controls[0]):
@@ -202,11 +228,26 @@ class player:
                 y = self.y
                 newXVal = x
                 newYVal = y
-                if (x+self.moveXThisFrame) < BOX_SIZE[0] or -(x+self.moveXThisFrame) > BOX_SIZE[0]:
+                if abs(x+self.moveXThisFrame) < BOX_SIZE[0]:
                     newXVal = x+self.moveXThisFrame
                 if y+self.moveXThisFrame >= 0:
                     newYVal = y+self.moveYThisFrame
                 #print(f"{newXVal}, {newYVal}")
+
+                #Pushbox
+                left_pushbox = (char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x  < 105 and self.is_left == False
+                right_pushbox = self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])  < 105 and self.is_left
+                top_pushbox = self.y - (char_pos[-(self.playerNum)][1] + PUSHBOXES[2])  < 105
+                bottom_pushbox =  (char_pos[-(self.playerNum)][1] + PUSHBOXES[1]) - self.y  < 105
+                if top_pushbox and bottom_pushbox:
+                    print(f"same height: [{(char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x}, {self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])}]")
+                    print(f"X Pos for other one: {char_pos[-(self.playerNum)][0]}")
+                if (left_pushbox or right_pushbox) and (top_pushbox and bottom_pushbox):
+                    print("pushing!")
+                    if (self.moveXThisFrame > 0 and left_pushbox) or (self.moveXThisFrame < 0 and right_pushbox):
+                        newXVal = x
+                    
+
                 self.x = newXVal
                 self.y = newYVal
                 self.turtle.setpos(self.x, self.y)
@@ -234,7 +275,7 @@ p2 = player(
     2,
     150, 0,
     ["j", "l", "k", "i", ";", "'"],
-    True
+    False
 )
 prev_delay = 0.0
 while True:
@@ -246,7 +287,7 @@ while True:
     p2.update()
     end = time.time()
     new_delay = (end-start)*10**3
-    print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
+    #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
     if (new_delay/1000) < FRAME_LENGTH/1000:
         time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
     prev_delay = new_delay
