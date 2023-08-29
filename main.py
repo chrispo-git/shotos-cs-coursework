@@ -112,7 +112,7 @@ ANIMATION_LIST = [
         ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Attack_3.gif", [-11.5,11.5,-25,14], [9, 32, -10, 6], [0, 1, 6, 30, 0], [9, 26, -10, 7]],
         ["sprites/F00_Attack_3.gif", [-11.5,11.5,-25,14], [9, 32, -10, 6], [0, 1, 6, 30, 0], [9, 26, -10, 7]],
-        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], None, None, [9, 26, -10, 7]],
         ["sprites/F00_Attack_4.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Attack_5.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
@@ -122,7 +122,7 @@ ANIMATION_LIST = [
         ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 4, 10, 0], [3, 30, -25, -12]],
         ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 4, 10, 0], [3, 30, -25, -12]],
         ["sprites/F00_AttackLw_3.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]],
-        ["sprites/F00_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None, None]
+        ["sprites/F00_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]]
     ],
     [ #AttackAir
         ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
@@ -212,6 +212,7 @@ hitbox_properties = [
 #Debug options
 ENABLE_HITBOXES = True
 FRAME_STEP = False
+SPACE_TO_PAUSE = True
 
 
 #Hitbox/Hurtbox Drawing
@@ -864,7 +865,7 @@ while True:
         print("Frame Skip! Performance aint looking good")
     start = time.time()
     turn_order = bool(random.getrandbits(1))
-    if not FRAME_STEP or keyboard.is_pressed("space"):
+    if (FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE):
         if turn_order:
             p1.update()
             p2.update()

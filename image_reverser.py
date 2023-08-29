@@ -4,7 +4,7 @@ import os
 
 def reverse():
     for root, dirs, files in os.walk("sprites"):
-        print(files)
+        #print(files)
         for filename in files:
             if filename.endswith(".png"):
                 pil_image = Image.open(f"sprites/{filename}")
@@ -12,7 +12,7 @@ def reverse():
                 new_file = new_file.replace(".png", ".gif")
                 pil_image = pil_image.save(new_file)
     for root, dirs, files in os.walk("sprites"):
-        print(files)
+        #print(files)
         for filename in files:
             if filename.endswith(".gif"):
                 pil_image = Image.open(f"sprites/{filename}")
