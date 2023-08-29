@@ -21,73 +21,91 @@ SCALE = 5
 
 WALK_SPEED = 12.0
 
-JUMP_DURATION_MUL = 1.5
-JUMP_INITAL = 20.0*JUMP_DURATION_MUL
-GRAVITY = 2.0*JUMP_DURATION_MUL
-MAX_FALL = 20.0*JUMP_DURATION_MUL
-AIR_MOVE = 10.0*JUMP_DURATION_MUL
+JUMP_INITAL = 50.0
+GRAVITY = 8.0
+MAX_FALL = 40.0
+AIR_MOVE = 15.0
 
 ANIMATION_LIST = [
     
     [ #Idle
-        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/Idle_1.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/Idle_2.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/Idle_2.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/Idle_3.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/Idle_4.gif", [-11.5,11.5,-25,14], None]
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/Idle_1.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/Idle_2.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/Idle_2.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/Idle_3.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/Idle_4.gif", [-11.5,11.5,-25,14], None, None]
     ],
     [ #WalkF
-        ["sprites/F00_Forward_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Forward_1.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Forward_2.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Forward_3.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Forward_4.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Forward_5.gif", [-11.5,11.5,-25,14], None]
+        ["sprites/F00_Forward_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Forward_1.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Forward_2.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Forward_3.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Forward_4.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Forward_5.gif", [-11.5,11.5,-25,14], None, None]
     ],
     [ #WalkB
-        ["sprites/F00_Backward_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Backward_1.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Backward_2.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Backward_3.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Backward_4.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Backward_5.gif", [-11.5,11.5,-25,14], None]
+        ["sprites/F00_Backward_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Backward_1.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Backward_2.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Backward_3.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Backward_4.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Backward_5.gif", [-11.5,11.5,-25,14], None, None]
     ],
     [ #Crouch
-        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_Crouch_1.gif", [-11.5,11.5,-25,2], None]
+        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_Crouch_1.gif", [-11.5,11.5,-25,2], None, None]
     ],
     [ #CrouchWait
-        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None]
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_CrouchWait_0.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_CrouchWait_1.gif", [-11.5,11.5,-25,2], None, None]
     ],
     [ #CrouchRv
-        ["sprites/F00_Crouch_1.gif", [-11.5,11.5,-25,2], None],
-        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None]
+        ["sprites/F00_Crouch_1.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_Crouch_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None]
     ],
     [ #JumpSquat
-        ["sprites/F00_JumpSquat_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_JumpSquat_0.gif", [-11.5,11.5,-25,14], None]
+        ["sprites/F00_JumpSquat_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_JumpSquat_0.gif", [-11.5,11.5,-25,14], None, None]
     ],
     [ #Air
-        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Air_2.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Air_2.gif", [-11.5,11.5,-25,14], None],
-        ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None]
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Air_2.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Air_2.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None, None]
+    ],
+    [ #Attack
+        ["sprites/F00_Attack_0.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Attack_1.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Attack_3.gif", [-11.5,11.5,-25,14], [9, 27, -10, 6], 0],
+        ["sprites/F00_Attack_3.gif", [-11.5,11.5,-25,14], [9, 27, -10, 6], 0],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Attack_4.gif", [-11.5,11.5,-25,14], None, None],
+        ["sprites/F00_Attack_5.gif", [-11.5,11.5,-25,14], None, None]
+    ],
+    [ #AttackLw
+        ["sprites/F00_AttackLw_0.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_AttackLw_1.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 32, -25, -12], -1],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 32, -25, -12], -1],
+        ["sprites/F00_AttackLw_3.gif", [-11.5,11.5,-25,2], None, None],
+        ["sprites/F00_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None]
     ]
 ]
 
-#Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2], [hitbox x1, hitbox x2, hitbox y1, hitbox y2, hitbox damage]]
+#Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2]
+# , [hitbox x1, hitbox x2, hitbox y1, hitbox y2]
+# , -1 Low, 1 High, 0 Mid
 
 def get_anim_ID(name: str) -> int:
         global ANIMATION_LIST_LABEL
@@ -105,7 +123,9 @@ ANIMATION_LIST_LABEL = [
     "CrouchWait",
     "CrouchRv",
     "JumpSquat",
-    "Air"
+    "Air",
+    "Attack",
+    "AttackLw"
 ]
 
 ACTIONABLE_LIST = [
@@ -117,7 +137,26 @@ ACTIONABLE_LIST = [
 PUSHBOXES = [11.5,-25,14]
 PUSHING_FORCE = 5
 char_pos = [[0,0], [0,0]]
-hurtbox = []
+
+#hitbox hurtbox interactions
+hurtbox = [
+    [0,0,0,0], 
+    [0,0,0,0]
+]
+
+
+hitbox = [
+    [0,0,0,0], 
+    [0,0,0,0]
+]
+
+
+hitbox_properties = [ #[Damage, Hitstun, Blockstun, High/Low (-1 Low, 1 High, 0 Mid)]
+    [0,0,0,0], 
+    [0,0,0,0]
+]
+
+
 
         
 
@@ -164,6 +203,10 @@ class player:
         self.lastmoveX = 0.0
         self.lastmoveX = 0.0
         self.jumpDir = 0.0 #-1.0 is back, 0.0 is neutral, 1.0 is forwards
+
+        #Attack Stuff
+        self.attackPressed = False
+        self.specialPressed = False
 
         #Turtle Setup
         self.turtle = turtle.Turtle()
@@ -302,6 +345,17 @@ class player:
                 else:
                     self.moveYThisFrame = self.lastmoveY - GRAVITY
                     self.moveXThisFrame = self.jumpDir * AIR_MOVE * -1.0
+                    
+    def attack(self):
+        global ANIMATION_LIST
+        global ACTIONABLE_LIST
+        if not self.isJump:
+            if self.animListID in ACTIONABLE_LIST:
+                if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
+                    self.set_new_anim_by_ID(get_anim_ID("AttackLw"))
+                else:
+                    self.set_new_anim_by_ID(get_anim_ID("Attack"))
+
 
     
     def check_correct_side(self):
@@ -342,6 +396,13 @@ class player:
                 self.uncrouch()
             if keyboard.is_pressed(self.controls[2]) and not keyboard.is_pressed(self.controls[3]):
                 self.up()
+                
+            if keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5]) and not self.attackPressed:
+                self.attackPressed = True
+                self.attack()
+
+            if not keyboard.is_pressed(self.controls[4]):
+                self.attackPressed = False
 
 
             if True:#self.moveXThisFrame != 0 or self.moveYThisFrame != 0:
@@ -381,6 +442,8 @@ class player:
 
                 self.x = newXVal
                 self.y = newYVal
+                if self.y < 0:
+                    self.y = 0
                 self.turtle.setpos(self.x, self.y)
                 self.lastmoveX = newXVal - x
                 self.lastmoveY = newYVal - y
