@@ -23,6 +23,11 @@ FRAME_LENGTH = 60.0
 SCALE = 5
 
 WALK_SPEED = 12.0
+FDASH_SPEED = 35.0
+FDASH_DECEL = 8.0
+BDASH_SPEED = 30.0
+BDASH_DECEL = 8.0
+DASH_WINDOW = 4
 
 JUMP_INITAL = 50.0
 GRAVITY = 8.0
@@ -80,6 +85,18 @@ ANIMATION_LIST = [
     [ #JumpSquat
         ["sprites/F00_JumpSquat_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_JumpSquat_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #ForwardDash
+        ["sprites/F00_ForwardDash_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ForwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ForwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ForwardDash_3.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #BackDash
+        ["sprites/F00_BackwardDash_0.gif", None, None, None, None],
+        ["sprites/F00_BackwardDash_0.gif", None, None, None, None],
+        ["sprites/F00_BackwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_BackwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Air
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
@@ -146,6 +163,8 @@ ANIMATION_LIST_LABEL = [
     "CrouchWait",
     "CrouchRv",
     "JumpSquat",
+    "ForwardDash",
+    "BackDash",
     "Air",
     "Attack",
     "AttackLw",
@@ -252,10 +271,10 @@ screen.bgcolor("white")
 #screen.delay(17)
 for i in ["sprites", "reverse_sprites"]:
     for root, dirs, files in os.walk(i):
-        print(files)
+        #print(files)
         for filename in files:
             if filename.endswith(".gif"):
-                print(filename)
+                #print(filename)
                 #Handles scaling up and stuff
                 larger = PhotoImage(file=f"{i}/{filename}").zoom(SCALE, SCALE)
                 screen.addshape(f"{i}/{filename}", Shape("image", larger))
@@ -300,6 +319,12 @@ class player:
         self.isHitstun = False
         self.hitstunFrames = 0
 
+        
+        self.leftPressed = False
+        self.rightPressed = False
+        self.backdashTimer = 0
+        self.forwarddashTimer = 0
+
         #Turtle Setup
         self.turtle = turtle.Turtle()
         self.turtle.speed(0)
@@ -310,20 +335,10 @@ class player:
 
         self.controls = controls
 
-    def animate(self):
+    def update_hit_hurt(self):
         global ANIMATION_LIST
         global JUMP_INITAL
         anim = ANIMATION_LIST[self.animListID]
-        anim_length = len(anim)
-        sprite = anim[self.frame][0]
-        if self.is_left == True:
-            sprite = sprite.replace("sprites", "reverse_sprites")
-        self.sprite = sprite
-        #print(self.sprite)
-        self.turtle.shape(self.sprite)
-        #print(self.turtle.shape())
-
-        #Report Hitboxes and Hurtboxes
         direction_mul = 1.0
         if self.is_left:
             direction_mul = -1.0
@@ -379,7 +394,22 @@ class player:
 
         
         hitbox_properties[self.playerNum - 1] = anim[self.frame][3]
-        
+
+    def animate(self):
+        global ANIMATION_LIST
+        global JUMP_INITAL
+        anim = ANIMATION_LIST[self.animListID]
+        anim_length = len(anim)
+        sprite = anim[self.frame][0]
+        if self.is_left == True:
+            sprite = sprite.replace("sprites", "reverse_sprites")
+        self.sprite = sprite
+        #print(self.sprite)
+        self.turtle.shape(self.sprite)
+        #print(self.turtle.shape())
+
+        #Report Hitboxes and Hurtboxes
+        self.update_hit_hurt()
         
         if self.frame+1 >= anim_length: #Returns to default anim for state
             self.frame = 0
@@ -488,11 +518,27 @@ class player:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
                 if self.animListID == get_anim_ID("WalkF") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
+                
+                if self.rightPressed == False:
+                    if self.forwarddashTimer == 0:
+                        self.forwarddashTimer = DASH_WINDOW
+                    else:
+                        self.forwarddashTimer = 0
+                        self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
+                        self.moveXThisFrame = FDASH_SPEED
             else:
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
                 if self.animListID == get_anim_ID("WalkB") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
+
+                if self.rightPressed == False:
+                    if self.backdashTimer == 0:
+                        self.backdashTimer = DASH_WINDOW
+                    else:
+                        self.backdashTimer = 0
+                        self.set_new_anim_by_ID(get_anim_ID("BackDash"))
+                        self.moveXThisFrame = BDASH_SPEED
 
 
     def left(self):
@@ -506,11 +552,27 @@ class player:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
                 if self.animListID == get_anim_ID("WalkF") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
+                
+                if self.leftPressed == False:
+                    if self.forwarddashTimer == 0:
+                        self.forwarddashTimer = DASH_WINDOW
+                    else:
+                        self.forwarddashTimer = 0
+                        self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
+                        self.moveXThisFrame = -FDASH_SPEED
             else:
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
                 if self.animListID == get_anim_ID("WalkB") and self.frame >= len(ANIMATION_LIST[self.animListID])-1:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
+
+                if self.leftPressed == False:
+                    if self.backdashTimer == 0:
+                        self.backdashTimer = DASH_WINDOW
+                    else:
+                        self.backdashTimer = 0
+                        self.set_new_anim_by_ID(get_anim_ID("BackDash"))
+                        self.moveXThisFrame = -BDASH_SPEED
                     
     def down(self):
         global ANIMATION_LIST
@@ -587,6 +649,32 @@ class player:
             if self.animListID in ACTIONABLE_LIST:
                     self.set_new_anim_by_ID(get_anim_ID("AttackAir"))
 
+                    
+    def dash(self):
+        global ANIMATION_LIST
+        global ACTIONABLE_LIST
+        if self.isJump or self.isCrouch or self.isHitstun:
+            return
+        
+        side_mul = 1
+        if self.is_left:
+            side_mul = -1
+
+        if self.animListID == get_anim_ID("ForwardDash"):
+            if self.lastmoveX != 0:
+                self.moveXThisFrame = self.lastmoveX - (FDASH_DECEL*side_mul)
+                
+                if abs(self.lastmoveX) - BDASH_DECEL < 0:
+                    self.moveXThisFrame = 0
+
+        if self.animListID == get_anim_ID("BackDash"):
+            if self.lastmoveX != 0:
+                self.moveXThisFrame = self.lastmoveX + (BDASH_DECEL*side_mul)
+
+                if abs(self.lastmoveX) - BDASH_DECEL < 0:
+                    self.moveXThisFrame = 0
+
+
     
     def check_correct_side(self):
         global ANIMATION_LIST
@@ -628,6 +716,7 @@ class player:
             self.check_is_hitting()
             self.hitstun_movement()
             self.air()
+            self.dash()
             self.animate()
 
 
@@ -636,12 +725,22 @@ class player:
             elif (self.animListID == get_anim_ID("WalkF") and self.is_left != False) or (self.animListID == get_anim_ID("WalkB") and self.is_left != True):
                 if  not self.isHitstun:
                     self.set_new_anim_by_ID()
-
+            
+            if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
+                self.leftPressed = True
+            else:
+                self.leftPressed = False
 
             if keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
                 self.right()
             elif (self.animListID == get_anim_ID("WalkF") and self.is_left != True) or (self.animListID == get_anim_ID("WalkB") and self.is_left != False):
                 self.set_new_anim_by_ID()
+                
+                
+            if keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
+                self.rightPressed = True
+            else:
+                self.rightPressed = False
 
                 
             if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
@@ -664,6 +763,11 @@ class player:
             if self.hitstunFrames > 0:
                 print("still in hitstun")
                 self.hitstunFrames -= 1
+                
+            if self.backdashTimer > 0:
+                self.backdashTimer -= 1
+            if self.forwarddashTimer > 0:
+                self.forwarddashTimer -= 1
 
             if self.hitstunFrames <= 0:
                 self.isHitstun = False
@@ -711,6 +815,11 @@ class player:
 
                 self.x = newXVal
                 self.y = newYVal
+
+                if self.x > BOX_SIZE[0]:
+                    self.x = BOX_SIZE[0]
+                if self.x < -BOX_SIZE[0]:
+                    self.x = -BOX_SIZE[0]
                 if self.y < 0:
                     self.y = 0
                 self.turtle.setpos(self.x, self.y)
@@ -721,6 +830,7 @@ class player:
                 self.moveYThisFrame = 0.0
 
             
+            self.update_hit_hurt()
             if ENABLE_HITBOXES:
                 draw_boxes()
 
