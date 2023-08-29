@@ -167,6 +167,8 @@ char_pos = [[0,0], [0,0]]
 #hitbox hurtbox interactions
 DEFAULT_Y_KNOCKBACK = 20 + GRAVITY
 KB_DECAY_MULTIPLIER = 0.8
+force_hit_now = False
+
 hurtbox = [
     [0,0,0,0], 
     [0,0,0,0]
@@ -190,7 +192,7 @@ hitbox_properties = [
 
 #Debug options
 ENABLE_HITBOXES = True
-FRAME_STEP = True
+FRAME_STEP = False
 
 
 #Hitbox/Hurtbox Drawing
@@ -381,7 +383,6 @@ class player:
         
         if self.frame+1 >= anim_length: #Returns to default anim for state
             self.frame = 0
-            print("Reset")
             self.set_new_anim_by_ID()
         else:
             self.frame += 1
@@ -439,13 +440,16 @@ class player:
     def check_is_hitting(self):
         global ANIMATION_LIST
         global ACTIONABLE_LIST
+        global force_hit_now
         #print(f"[{self.x}, {self.y}]")
         enemy_hurtbox = hurtbox[-(self.playerNum)]
         enemy_hurtbox2 = hurtbox_2[-(self.playerNum)]
         my_hitbox = hitbox[self.playerNum - 1]
 
         if my_hitbox[0] < 9000 and (self.overlap(enemy_hurtbox, my_hitbox) or self.overlap(enemy_hurtbox2, my_hitbox)):
-            self.hasHit = True
+            if not self.hasHit:
+                force_hit_now = True
+                self.hasHit = True
     
     
     def set_new_anim_by_ID(self, id=-2, frame=0):
@@ -600,6 +604,24 @@ class player:
     def update(self):
             global PUSHBOXES
             global PUSHING_FORCE
+            global force_hit_now
+
+            if force_hit_now and not self.hasHit and not hitbox_properties[-(self.playerNum)] == None:
+                enemy_properties = hitbox_properties[-(self.playerNum)]
+                force_hit_now = False
+                print("Has Forced a hit")
+                self.isHitstun = True
+                self.hitstunFrames = enemy_properties[2]
+                self.moveXThisFrame = enemy_properties[3]
+                if self.is_left == True:
+                    self.moveXThisFrame *= -1
+                
+                self.moveYThisFrame = enemy_properties[4]
+                if enemy_properties[4] == 0 and self.isJump:
+                    self.moveYThisFrame = DEFAULT_Y_KNOCKBACK
+                self.lastmoveX = self.moveXThisFrame * -1
+                self.lastmoveY = self.moveYThisFrame
+                self.set_new_anim_by_ID(get_anim_ID("Hitstun"))
 
             self.check_correct_side()
             self.check_is_hurt()
