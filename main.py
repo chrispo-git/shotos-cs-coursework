@@ -9,6 +9,7 @@ import image_reverser
 from shapely.geometry import Polygon
 import numpy as np
 import random
+import math
 
 image_reverser.reverse()
 
@@ -22,10 +23,11 @@ FRAME_LENGTH = 60.0
 #Character constants
 SCALE = 5
 
+HEALTH = 20
 WALK_SPEED = 12.0
-FDASH_SPEED = 35.0
+FDASH_SPEED = 42.0
 FDASH_DECEL = 8.0
-BDASH_SPEED = 30.0
+BDASH_SPEED = 35.0
 BDASH_DECEL = 8.0
 DASH_WINDOW = 4
 
@@ -107,20 +109,17 @@ ANIMATION_LIST = [
         ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Attack
-        ["sprites/F00_Attack_0.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_Attack_1.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_Attack_3.gif", [-11.5,11.5,-25,14], [9, 32, -10, 6], [0, 1, 6, 30, 0], [9, 26, -10, 7]],
-        ["sprites/F00_Attack_3.gif", [-11.5,11.5,-25,14], [9, 32, -10, 6], [0, 1, 6, 30, 0], [9, 26, -10, 7]],
-        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], None, None, [9, 26, -10, 7]],
-        ["sprites/F00_Attack_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 2, 10, 0], [5, 22, -12, 1]],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 2, 10, 0], [5, 22, -12, 1]],
+        ["sprites/F00_Attack_1.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
+        ["sprites/F00_Attack_4.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
         ["sprites/F00_Attack_5.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #AttackLw
         ["sprites/F00_AttackLw_0.gif", [-11.5,11.5,-25,2], None, None, None],
         ["sprites/F00_AttackLw_1.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 4, 10, 0], [3, 30, -25, -12]],
-        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 4, 10, 0], [3, 30, -25, -12]],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 30, -25, -12]],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 30, -25, -12]],
         ["sprites/F00_AttackLw_3.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]],
         ["sprites/F00_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]]
     ],
@@ -139,6 +138,16 @@ ANIMATION_LIST = [
         ["sprites/F00_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Hitstun_1.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #Guard
+        ["sprites/F00_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Guard_1.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #CrouchGuard
+        ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_CrouchGuard_1.gif", [-11.5,11.5,-25,2], None, None, None]
     ]
 ]
 
@@ -169,7 +178,9 @@ ANIMATION_LIST_LABEL = [
     "Attack",
     "AttackLw",
     "AttackAir",
-    "Hitstun"
+    "Hitstun",
+    "Guard",
+    "CrouchGuard"
 ]
 
 ACTIONABLE_LIST = [
@@ -187,6 +198,9 @@ char_pos = [[0,0], [0,0]]
 DEFAULT_Y_KNOCKBACK = 20 + GRAVITY
 KB_DECAY_MULTIPLIER = 0.8
 force_hit_now = False
+PUSHBACK = 15
+BLOCK_KB_MUL = 0.5
+BLOCK_HITSTUN_MUL = 0.5
 
 hurtbox = [
     [0,0,0,0], 
@@ -286,7 +300,7 @@ class player:
         playerNum: int,
         x: int, y: int,
         #sprite, frame, animList,
-        controls: list, #Controls expressed as [left, right, up, down, attack, special]
+        controls: list, #Controls expressed as [left, right, up, down, light, heavy, special]
         Left: bool
     ):
         self.playerNum = playerNum
@@ -315,10 +329,14 @@ class player:
         self.attackBuffer = 0
         self.jumpBuffer = 0
         self.specialBuffer = 0
+        self.doPushback = False
 
         #Hitstun
         self.isHitstun = False
+        self.isBlockstun = False
+        self.isBlocking = False
         self.hitstunFrames = 0
+        self.hp = HEALTH
 
         
         self.leftPressed = False
@@ -372,7 +390,7 @@ class player:
             hurtbox2_pos[3] += anim[self.frame][4][3]*SCALE
             hurtbox_2[self.playerNum - 1] = hurtbox2_pos
         else:
-            hurtbox_2[self.playerNum - 1] = [999, 1000, 999, 1000]
+            hurtbox_2[self.playerNum - 1] = [9990, 10000, 9990, 10000]
 
         
         hitbox[self.playerNum - 1] = [0,0,0,0]
@@ -432,9 +450,50 @@ class player:
         if r1y1 > r2y2 or r2y1 > r1y2:
             return False
         
-        print("Overlaps!")
+        #print("Overlaps!")
         return True
+    
+    def did_i_block_that(self):
+        enemy_properties = hitbox_properties[-(self.playerNum)]
+        high_low = enemy_properties[0]
+        if self.isBlocking:
+            if high_low == 0:
+                return True 
+            if high_low == -1 and self.isCrouch:
+                return True 
+            if high_low == 1 and not self.isCrouch:
+                return True 
         
+        return False
+
+    def start_hitstun(self):
+            enemy_properties = hitbox_properties[-(self.playerNum)]
+            self.isHitstun = True
+            self.hitstunFrames = enemy_properties[2]
+            self.moveXThisFrame = enemy_properties[3]
+            if self.is_left == True:
+                self.moveXThisFrame *= -1
+            
+            self.moveYThisFrame = enemy_properties[4]
+            if enemy_properties[4] == 0 and self.isJump:
+                self.moveYThisFrame = DEFAULT_Y_KNOCKBACK
+            
+            if self.did_i_block_that():
+                self.isBlockstun = True
+                self.moveXThisFrame *= BLOCK_KB_MUL
+                self.moveYThisFrame = 0
+                self.hitstunFrames = int(math.floor(self.hitstunFrames*BLOCK_HITSTUN_MUL))
+
+            self.lastmoveX = self.moveXThisFrame * -1
+            self.lastmoveY = self.moveYThisFrame
+            if not self.did_i_block_that():
+                self.set_new_anim_by_ID(get_anim_ID("Hitstun"))
+            else:
+                if self.isCrouch:
+                    self.set_new_anim_by_ID(get_anim_ID("CrouchGuard"))
+                else:
+                    self.set_new_anim_by_ID(get_anim_ID("Guard"))
+
     def check_is_hurt(self):
         global ANIMATION_LIST
         global ACTIONABLE_LIST
@@ -447,19 +506,9 @@ class player:
         #if enemy_hitbox[0] < 9000:
             #print(f"hurtbox [{my_hurtbox[0]} - {my_hurtbox[1]}], hitbox [{enemy_hitbox[0]} - {enemy_hitbox[1]}]")
         if not enemy_properties == None and enemy_hitbox[0] < 9000 and (self.overlap(enemy_hitbox, my_hurtbox) or self.overlap(enemy_hitbox, my_hurtbox2)):
-            print("Hitstun!")
-            self.isHitstun = True
-            self.hitstunFrames = enemy_properties[2]
-            self.moveXThisFrame = enemy_properties[3]
-            if self.is_left == True:
-                self.moveXThisFrame *= -1
+            #print("Hitstun!")
+            self.start_hitstun()
             
-            self.moveYThisFrame = enemy_properties[4]
-            if enemy_properties[4] == 0 and self.isJump:
-                self.moveYThisFrame = DEFAULT_Y_KNOCKBACK
-            self.lastmoveX = self.moveXThisFrame * -1
-            self.lastmoveY = self.moveYThisFrame
-            self.set_new_anim_by_ID(get_anim_ID("Hitstun"))
     
     def hitstun_movement(self):
         if self.isHitstun:
@@ -481,6 +530,7 @@ class player:
             if not self.hasHit:
                 force_hit_now = True
                 self.hasHit = True
+                self.doPushback = True
     
     
     def set_new_anim_by_ID(self, id=-2, frame=0):
@@ -489,7 +539,13 @@ class player:
         if id == -2:
             self.frame = frame
             if self.isHitstun:
-                    self.animListID = get_anim_ID("Hitstun")
+                    if self.isBlockstun:
+                        if self.isCrouch:
+                            self.set_new_anim_by_ID(get_anim_ID("CrouchGuard"))
+                        else:
+                            self.set_new_anim_by_ID(get_anim_ID("Guard"))
+                    else:
+                        self.animListID = get_anim_ID("Hitstun")
                     return
             if self.isJump:
                 if self.animListID == get_anim_ID("JumpSquat"):
@@ -524,9 +580,10 @@ class player:
                     if self.forwarddashTimer == 0:
                         self.forwarddashTimer = DASH_WINDOW
                     else:
-                        self.forwarddashTimer = 0
-                        self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
-                        self.moveXThisFrame = FDASH_SPEED
+                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                            self.forwarddashTimer = 0
+                            self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
+                            self.moveXThisFrame = FDASH_SPEED
             else:
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
@@ -537,9 +594,10 @@ class player:
                     if self.backdashTimer == 0:
                         self.backdashTimer = DASH_WINDOW
                     else:
-                        self.backdashTimer = 0
-                        self.set_new_anim_by_ID(get_anim_ID("BackDash"))
-                        self.moveXThisFrame = BDASH_SPEED
+                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                            self.backdashTimer = 0
+                            self.set_new_anim_by_ID(get_anim_ID("BackDash"))
+                            self.moveXThisFrame = BDASH_SPEED
 
 
     def left(self):
@@ -558,9 +616,10 @@ class player:
                     if self.forwarddashTimer == 0:
                         self.forwarddashTimer = DASH_WINDOW
                     else:
-                        self.forwarddashTimer = 0
-                        self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
-                        self.moveXThisFrame = -FDASH_SPEED
+                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                            self.forwarddashTimer = 0
+                            self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
+                            self.moveXThisFrame = -FDASH_SPEED
             else:
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
@@ -571,9 +630,10 @@ class player:
                     if self.backdashTimer == 0:
                         self.backdashTimer = DASH_WINDOW
                     else:
-                        self.backdashTimer = 0
-                        self.set_new_anim_by_ID(get_anim_ID("BackDash"))
-                        self.moveXThisFrame = -BDASH_SPEED
+                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                            self.backdashTimer = 0
+                            self.set_new_anim_by_ID(get_anim_ID("BackDash"))
+                            self.moveXThisFrame = -BDASH_SPEED
                     
     def down(self):
         global ANIMATION_LIST
@@ -642,6 +702,7 @@ class player:
 
         if not self.isJump:
             if self.animListID in ACTIONABLE_LIST:
+                self.doPushback = False
                 if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
                     self.set_new_anim_by_ID(get_anim_ID("AttackLw"))
                 else:
@@ -649,6 +710,16 @@ class player:
         else:
             if self.animListID in ACTIONABLE_LIST:
                     self.set_new_anim_by_ID(get_anim_ID("AttackAir"))
+                    
+    def set_pushback(self):
+        if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack")]:
+            side_mul = 1
+            if self.is_left:
+                side_mul = -1
+
+            if self.doPushback == True:
+                self.moveXThisFrame = PUSHBACK * side_mul * -1
+
 
                     
     def dash(self):
@@ -689,6 +760,22 @@ class player:
                 self.is_left = True
                 self.set_new_anim_by_ID()
                 
+    def check_block(self):
+        if self.isJump:
+            self.isBlocking = False
+        if self.isHitstun:
+            return
+        if not self.is_left:
+            if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
+                self.isBlocking = True
+            else:
+                self.isBlocking = False
+        else:
+            if keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
+                self.isBlocking = True
+            else:
+                self.isBlocking = False
+
     
     def update(self):
             global PUSHBOXES
@@ -696,23 +783,12 @@ class player:
             global force_hit_now
 
             if force_hit_now and not self.hasHit and not hitbox_properties[-(self.playerNum)] == None:
-                enemy_properties = hitbox_properties[-(self.playerNum)]
                 force_hit_now = False
-                print("Has Forced a hit")
-                self.isHitstun = True
-                self.hitstunFrames = enemy_properties[2]
-                self.moveXThisFrame = enemy_properties[3]
-                if self.is_left == True:
-                    self.moveXThisFrame *= -1
-                
-                self.moveYThisFrame = enemy_properties[4]
-                if enemy_properties[4] == 0 and self.isJump:
-                    self.moveYThisFrame = DEFAULT_Y_KNOCKBACK
-                self.lastmoveX = self.moveXThisFrame * -1
-                self.lastmoveY = self.moveYThisFrame
-                self.set_new_anim_by_ID(get_anim_ID("Hitstun"))
+                #print("Has Forced a hit")
+                self.start_hitstun()
 
             self.check_correct_side()
+            self.check_block()
             self.check_is_hurt()
             self.check_is_hitting()
             self.hitstun_movement()
@@ -762,7 +838,7 @@ class player:
                 self.jumpBuffer -= 1
                 
             if self.hitstunFrames > 0:
-                print("still in hitstun")
+                #print("still in hitstun")
                 self.hitstunFrames -= 1
                 
             if self.backdashTimer > 0:
@@ -772,11 +848,14 @@ class player:
 
             if self.hitstunFrames <= 0:
                 self.isHitstun = False
+                self.isBlockstun = False
                 if self.y < 5:
                     self.y = 0
 
             if not keyboard.is_pressed(self.controls[4]):
                 self.attackPressed = False
+            
+            self.set_pushback()
 
 
             if True:#self.moveXThisFrame != 0 or self.moveYThisFrame != 0:
@@ -849,20 +928,20 @@ def init_controls(players: list):
 p1 = player(
     1,
     -150, 0,
-    ["a", "d", "w", "s", "f", "g"],
+    ["a", "d", "w", "s", "f", "g", "h"],
     False
 )
 p2 = player(
     2,
     150, 0,
-    ["j", "l", "i", "k", ";", "'"],
+    ["left", "right", "up", "down", ".", "/", "shift"],
     True
 )
 prev_delay = 0.0
 while True:
     if prev_delay > FRAME_LENGTH*2:
         pass
-        print("Frame Skip! Performance aint looking good")
+        #print("Frame Skip! Performance aint looking good")
     start = time.time()
     turn_order = bool(random.getrandbits(1))
     if (FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE):
