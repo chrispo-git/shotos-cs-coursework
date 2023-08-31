@@ -196,9 +196,9 @@ ANIMATION_LIST = [
     [ #SpecialLw
         ["sprites/F00_SpecialLw_0.gif", [-11.5,11.5,-25,4], None, None, None],
         ["sprites/F00_SpecialLw_1.gif", None, None, None, None],
-        ["sprites/F00_SpecialLw_2.gif", None, [7, 18, -10, 5], [0, 3, 10, 20, 80, 3], None],
-        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80, 3], None],
-        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80, 3], None],
+        ["sprites/F00_SpecialLw_2.gif", None, [7, 20, -10, 5], [0, 3, 10, 20, 100, 3], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 18, -8, 25], [0, 3, 10, 20, 100, 3], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 18, -8, 25], [0, 3, 10, 20, 100, 3], None],
         ["sprites/F00_SpecialLw_3.gif", [-11.5,11.5,-22,25], None, None, None],
         ["sprites/F00_SpecialLw_4.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialLw_5.gif", [-11.5,11.5,-25,14], None, None, None],
@@ -281,7 +281,7 @@ BLOCKING_LIST = [
 
 
 #Debug options
-ENABLE_HITBOXES = True
+ENABLE_HITBOXES = False
 FRAME_STEP = False
 SPACE_TO_PAUSE = True
 
@@ -339,6 +339,7 @@ def draw_boxes():
 
 screen = turtle.Screen()
 screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
+screen.title("Jumpsies")
 screen.bgcolor("white")
 #screen.delay(17)
 for i in ["sprites", "reverse_sprites"]:
