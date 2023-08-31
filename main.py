@@ -4,12 +4,10 @@ import time
 import keyboard
 from tkinter import PhotoImage
 from turtle import Shape
-from PIL import Image, ImageTk
 import image_reverser
-from shapely.geometry import Polygon
-import numpy as np
 import random
 import math
+import sys
 
 image_reverser.reverse()
 
@@ -23,7 +21,7 @@ FRAME_LENGTH = 60.0
 #Character constants
 SCALE = 5
 
-HEALTH = 60
+HEALTH = 45
 WALK_SPEED = 12.0
 FDASH_SPEED = 42.0
 FDASH_DECEL = 8.0
@@ -131,11 +129,11 @@ ANIMATION_LIST = [
     [ #AttackAir
         ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
         ["sprites/F00_AttackAir_1.gif", [-11.5,11.5,-20,12], None, None, None],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
         ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
@@ -484,6 +482,8 @@ class player:
     def did_i_block_that(self):
         enemy_properties = hitbox_properties[-(self.playerNum)]
         high_low = enemy_properties[0]
+        if self.isHitstun and not self.isBlockstun:
+            return False
         if self.isBlocking:
             if high_low == 0:
                 return True 
@@ -497,7 +497,6 @@ class player:
     def start_hitstun(self):
             #print("start")
             enemy_properties = hitbox_properties[-(self.playerNum)]
-            self.isHitstun = True
             self.hitstunFrames = enemy_properties[2]
             #print(self.hitstunFrames)
             self.moveXThisFrame = enemy_properties[3]
@@ -514,6 +513,8 @@ class player:
                 self.moveXThisFrame *= BLOCK_KB_MUL
                 self.moveYThisFrame = 0
                 self.hitstunFrames = int(math.floor(self.hitstunFrames*BLOCK_HITSTUN_MUL))
+                
+            self.isHitstun = True
 
             self.lastmoveX = self.moveXThisFrame * -1
             self.lastmoveY = self.moveYThisFrame
@@ -527,12 +528,12 @@ class player:
                     self.maxHitstun = self.hitstunFrames
                     #print("Hurting")
                     self.decreaseHp = enemy_properties[1]
-                self.set_new_anim_by_ID(get_anim_ID("Hitstun"))
+                self.set_new_anim_by_ID()
             else:
                 if self.isCrouch:
-                    self.set_new_anim_by_ID(get_anim_ID("CrouchGuard"))
+                    self.set_new_anim_by_ID()
                 else:
-                    self.set_new_anim_by_ID(get_anim_ID("Guard"))
+                    self.set_new_anim_by_ID()
 
     def check_is_hurt(self):
         global ANIMATION_LIST
@@ -600,6 +601,10 @@ class player:
             else:
                     self.animListID = get_anim_ID("Idle")
                     return
+        
+        global force_hit_now
+
+        force_hit_now = False
         self.frame = frame
         self.animListID = id
 
@@ -711,6 +716,7 @@ class player:
         global GRAVITY
         global MAX_FALL
         global AIR_MOVE
+        global force_hit_now
         #print(f"[{self.x}, {self.y}]")
         if self.isJump == True:
             if self.y <= 0.0 and self.lastmoveY < 0.0:
@@ -842,6 +848,8 @@ class player:
         if self.isJump:
             self.isBlocking = False
         if self.isHitstun:
+            return
+        if self.hitstunFrames > 0:
             return
         if not self.is_left:
             if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
@@ -1016,15 +1024,18 @@ class battleUI:
     def __init__(self):
         self.p1HP = turtle.Turtle()
         self.p2HP = turtle.Turtle()
+        self.youWin = turtle.Turtle()
         self.p1HpPos = [-200,150]
         self.p2HpPos = [200,150]
         self.p1HP.penup()
         self.p2HP.penup()
         screen.tracer(0)
+        self.youWin.hideturtle()
         self.p1HP.hideturtle()
         self.p2HP.hideturtle()
         self.p1HP.goto(self.p1HpPos[0], self.p1HpPos[1])
         self.p2HP.goto(self.p2HpPos[0], self.p2HpPos[1])
+        self.youWin.goto(0, 0)
         screen.update()
         screen.tracer(10)
     
@@ -1033,6 +1044,14 @@ class battleUI:
         self.p1HP.write(f"{p1.hp}", False, align="center", font=['Arial', '36', 'bold'])
         self.p2HP.clear()
         self.p2HP.write(f"{p2.hp}", False, align="center", font=['Arial', '36', 'bold'])
+        self.youWin.clear()
+        if youwin:
+            self.p1HP.clear()
+            self.p2HP.clear()
+            player = 1
+            if p2.hp > p1.hp:
+                player = 2
+            self.youWin.write(f"Player {player} Wins", False, align="center", font=['Arial', '50', 'bold'])
 
 
 def init_controls(players: list):
@@ -1057,32 +1076,43 @@ p2 = player(
 
 accessOtherPlayer = [p2, p1]
 
+youwin = False
+
 ui = battleUI()
 
+
 prev_delay = 0.0
-while True:
-        if prev_delay > FRAME_LENGTH*2:
-            pass
-            #print("Frame Skip! Performance aint looking good")
-        start = time.time()
-        turn_order = bool(random.getrandbits(1))
-        if (FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE):
-            ui.update()
-            if turn_order:
-                p1.update()
-                p2.update()
-            else:
-                p2.update()
-                p1.update()
-        end = time.time()
-        new_delay = (end-start)*10**3
-        #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
-        if (new_delay/1000) < FRAME_LENGTH/1000:
-            time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
-        prev_delay = new_delay
-    
-        p1.hp -= p1.decreaseHp
-        p2.hp -= p2.decreaseHp
-        p1.decreaseHp = 0
-        p2.decreaseHp = 0
-screen.mainloop()
+while youwin == False:
+        try:
+            if prev_delay > FRAME_LENGTH*2:
+                pass
+                print("Frame Skip! Performance aint looking good")
+
+            start = time.time()
+            turn_order = bool(random.getrandbits(1))
+            if (FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE):
+                ui.update()
+                if turn_order:
+                    p1.update()
+                    p2.update()
+                else:
+                    p2.update()
+                    p1.update()
+            end = time.time()
+            new_delay = (end-start)*10**3
+            #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
+            if (new_delay/1000) < FRAME_LENGTH/1000:
+                time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
+            prev_delay = new_delay
+        
+            p1.hp -= p1.decreaseHp
+            p2.hp -= p2.decreaseHp
+            p1.decreaseHp = 0
+            p2.decreaseHp = 0
+            if p1.hp <= 0 or p2.hp <= 0:
+                youwin = True
+        except Exception:
+            sys.exit()
+
+ui.update()
+screen.mainloop()     
