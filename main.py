@@ -23,7 +23,7 @@ FRAME_LENGTH = 60.0
 #Character constants
 SCALE = 5
 
-HEALTH = 20
+HEALTH = 60
 WALK_SPEED = 12.0
 FDASH_SPEED = 42.0
 FDASH_DECEL = 8.0
@@ -35,6 +35,9 @@ JUMP_INITAL = 50.0
 GRAVITY = 8.0
 MAX_FALL = 40.0
 AIR_MOVE = 15.0
+
+SPECIAL_LW_INIT_Y = 45.0
+SPECIAL_LW_INIT_X = 10.0
 
 BUFFER_FRAMES = 1
 
@@ -113,24 +116,26 @@ ANIMATION_LIST = [
         ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 2, 10, 0], [5, 22, -12, 1]],
         ["sprites/F00_Attack_1.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
         ["sprites/F00_Attack_4.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
+        ["sprites/F00_Attack_5.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Attack_5.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #AttackLw
         ["sprites/F00_AttackLw_0.gif", [-11.5,11.5,-25,2], None, None, None],
         ["sprites/F00_AttackLw_1.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 30, -25, -12]],
-        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 30, -25, -12]],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 3, -25, -12]],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 3, -25, -12]],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]],
         ["sprites/F00_AttackLw_3.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]],
         ["sprites/F00_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]]
     ],
     [ #AttackAir
         ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
         ["sprites/F00_AttackAir_1.gif", [-11.5,11.5,-20,12], None, None, None],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 1, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 1, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 1, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 1, 4, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 1, 4, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 4, 15, 0], [-5, 28, -10, 3]],
         ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
@@ -148,6 +153,22 @@ ANIMATION_LIST = [
         ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
         ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
         ["sprites/F00_CrouchGuard_1.gif", [-11.5,11.5,-25,2], None, None, None]
+    ],
+    [ #SpecialLw
+        ["sprites/F00_SpecialLw_0.gif", [-11.5,11.5,-25,4], None, None, None],
+        ["sprites/F00_SpecialLw_1.gif", None, None, None, None],
+        ["sprites/F00_SpecialLw_2.gif", None, [7, 18, -10, 5], [0, 3, 10, 20, 80], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80], None],
+        ["sprites/F00_SpecialLw_3.gif", [-11.5,11.5,-22,25], None, None, None],
+        ["sprites/F00_SpecialLw_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialLw_5.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialLw_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialLw_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ]
 ]
 
@@ -180,13 +201,18 @@ ANIMATION_LIST_LABEL = [
     "AttackAir",
     "Hitstun",
     "Guard",
-    "CrouchGuard"
+    "CrouchGuard",
+    "SpecialLw"
 ]
 
 ACTIONABLE_LIST = [
     get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB"), 
     get_anim_ID("Crouch"), get_anim_ID("CrouchWait"), get_anim_ID("CrouchRv"),
     get_anim_ID("Air")
+]
+
+SPECIAL_CANCEL_LIST = [
+    get_anim_ID("Attack"), get_anim_ID("AttackLw")
 ]
 
 #Collisions!
@@ -224,7 +250,7 @@ hitbox_properties = [
 ]
 
 #Debug options
-ENABLE_HITBOXES = True
+ENABLE_HITBOXES = False
 FRAME_STEP = False
 SPACE_TO_PAUSE = True
 
@@ -336,7 +362,9 @@ class player:
         self.isBlockstun = False
         self.isBlocking = False
         self.hitstunFrames = 0
+        self.maxHitstun = 0
         self.hp = HEALTH
+        self.decreaseHp = 0
 
         
         self.leftPressed = False
@@ -467,9 +495,11 @@ class player:
         return False
 
     def start_hitstun(self):
+            #print("start")
             enemy_properties = hitbox_properties[-(self.playerNum)]
             self.isHitstun = True
             self.hitstunFrames = enemy_properties[2]
+            #print(self.hitstunFrames)
             self.moveXThisFrame = enemy_properties[3]
             if self.is_left == True:
                 self.moveXThisFrame *= -1
@@ -477,6 +507,7 @@ class player:
             self.moveYThisFrame = enemy_properties[4]
             if enemy_properties[4] == 0 and self.isJump:
                 self.moveYThisFrame = DEFAULT_Y_KNOCKBACK
+            
             
             if self.did_i_block_that():
                 self.isBlockstun = True
@@ -487,6 +518,15 @@ class player:
             self.lastmoveX = self.moveXThisFrame * -1
             self.lastmoveY = self.moveYThisFrame
             if not self.did_i_block_that():
+                if enemy_properties[4] > 0 and not self.isJump:
+                    self.isJump = True
+                    self.jumpDir = 0
+                    self.lastmoveY = self.moveYThisFrame + GRAVITY
+
+                if self.maxHitstun != self.hitstunFrames:
+                    self.maxHitstun = self.hitstunFrames
+                    #print("Hurting")
+                    self.decreaseHp = enemy_properties[1]
                 self.set_new_anim_by_ID(get_anim_ID("Hitstun"))
             else:
                 if self.isCrouch:
@@ -517,6 +557,7 @@ class player:
             self.lastmoveY = self.moveYThisFrame
             self.lastmoveX = self.moveXThisFrame
 
+
     def check_is_hitting(self):
         global ANIMATION_LIST
         global ACTIONABLE_LIST
@@ -528,6 +569,7 @@ class player:
 
         if my_hitbox[0] < 9000 and (self.overlap(enemy_hurtbox, my_hitbox) or self.overlap(enemy_hurtbox2, my_hitbox)):
             if not self.hasHit:
+                #print("Yeah")
                 force_hit_now = True
                 self.hasHit = True
                 self.doPushback = True
@@ -688,6 +730,7 @@ class player:
                     if (keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5])):
                         self.attackBuffer = 1
                 else:
+                    #print("we running")
                     self.moveYThisFrame = self.lastmoveY - GRAVITY
                     if not self.isHitstun:
                         self.moveXThisFrame = self.jumpDir * AIR_MOVE * -1.0
@@ -710,6 +753,41 @@ class player:
         else:
             if self.animListID in ACTIONABLE_LIST:
                     self.set_new_anim_by_ID(get_anim_ID("AttackAir"))
+                    
+    def special(self):
+        global ANIMATION_LIST
+        global ACTIONABLE_LIST
+        global SPECIAL_CANCEL_LIST
+        if not self.animListID in ACTIONABLE_LIST and not (self.animListID in SPECIAL_CANCEL_LIST and self.doPushback):
+            self.specialBuffer = BUFFER_FRAMES
+        else:
+            self.specialBuffer = 0
+            if self.isJump:
+                return
+
+            if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
+                self.set_new_anim_by_ID(get_anim_ID("SpecialLw"))
+            elif keyboard.is_pressed(self.controls[1]) or keyboard.is_pressed(self.controls[0]):
+                dummy = 0
+            else:
+                dummy = 0
+    
+    def specialLw(self):
+        if self.animListID != get_anim_ID("SpecialLw"):
+            return
+        
+        direction_mul = 1.0
+        if self.is_left:
+            direction_mul = -1.0
+
+        if self.frame == 3:
+            self.isJump = True
+            self.jumpDir = 0
+            self.moveYThisFrame = SPECIAL_LW_INIT_Y
+            self.moveXThisFrame = SPECIAL_LW_INIT_X*direction_mul
+        elif self.frame > 3:
+            self.moveYThisFrame = self.lastmoveY - GRAVITY
+            self.moveXThisFrame = self.lastmoveX * 0.8
                     
     def set_pushback(self):
         if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack")]:
@@ -785,6 +863,8 @@ class player:
             if force_hit_now and not self.hasHit and not hitbox_properties[-(self.playerNum)] == None:
                 force_hit_now = False
                 #print("Has Forced a hit")
+                other = accessOtherPlayer[self.playerNum - 1]
+                other.maxHitstun = hitbox_properties[-(self.playerNum)][2]
                 self.start_hitstun()
 
             self.check_correct_side()
@@ -794,6 +874,7 @@ class player:
             self.hitstun_movement()
             self.air()
             self.dash()
+            self.specialLw()
             self.animate()
 
 
@@ -827,12 +908,19 @@ class player:
             if (keyboard.is_pressed(self.controls[2]) and not keyboard.is_pressed(self.controls[3])) or self.jumpBuffer > 0:
                 self.up()
                 
-            if (keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5]) and not self.attackPressed) or self.attackBuffer > 0:
+            if (keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5]) and not keyboard.is_pressed(self.controls[6]) and not self.attackPressed) or self.attackBuffer > 0:
                 self.attackPressed = True
                 self.attack()
+                
+            if (keyboard.is_pressed(self.controls[6]) and not keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5]) and not self.specialPressed) or self.specialBuffer > 0:
+                self.specialPressed = True
+                self.special()
             
             if self.attackBuffer > 0:
                 self.attackBuffer -= 1
+                
+            if self.specialBuffer > 0:
+                self.specialBuffer -= 1
                 
             if self.jumpBuffer > 0:
                 self.jumpBuffer -= 1
@@ -851,9 +939,15 @@ class player:
                 self.isBlockstun = False
                 if self.y < 5:
                     self.y = 0
+            
+            if not self.isHitstun:
+                self.maxHitstun = False
 
             if not keyboard.is_pressed(self.controls[4]):
                 self.attackPressed = False
+
+            if not keyboard.is_pressed(self.controls[6]):
+                self.specialPressed = False
             
             self.set_pushback()
 
@@ -868,8 +962,8 @@ class player:
                 #Forces players to stay within fighting area
                 if abs(x+self.moveXThisFrame) < BOX_SIZE[0]:
                     newXVal = x+self.moveXThisFrame
-                if y+self.moveXThisFrame >= 0:
-                    newYVal = y+self.moveYThisFrame
+                
+                newYVal = y+self.moveYThisFrame
 
                 #Pushbox
                 left_pushbox = (char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x  < 105 and self.is_left == False
@@ -918,6 +1012,29 @@ class player:
             char_pos[self.playerNum - 1][1] = self.y 
             #print(char_pos)
 
+class battleUI:
+    def __init__(self):
+        self.p1HP = turtle.Turtle()
+        self.p2HP = turtle.Turtle()
+        self.p1HpPos = [-200,150]
+        self.p2HpPos = [200,150]
+        self.p1HP.penup()
+        self.p2HP.penup()
+        screen.tracer(0)
+        self.p1HP.hideturtle()
+        self.p2HP.hideturtle()
+        self.p1HP.goto(self.p1HpPos[0], self.p1HpPos[1])
+        self.p2HP.goto(self.p2HpPos[0], self.p2HpPos[1])
+        screen.update()
+        screen.tracer(10)
+    
+    def update(self):
+        self.p1HP.clear()
+        self.p1HP.write(f"{p1.hp}", False, align="center", font=['Arial', '36', 'bold'])
+        self.p2HP.clear()
+        self.p2HP.write(f"{p2.hp}", False, align="center", font=['Arial', '36', 'bold'])
+
+
 def init_controls(players: list):
     for i in players:
         screen.onkey(i.left(), i.controls[0])
@@ -937,24 +1054,35 @@ p2 = player(
     ["left", "right", "up", "down", ".", "/", "shift"],
     True
 )
+
+accessOtherPlayer = [p2, p1]
+
+ui = battleUI()
+
 prev_delay = 0.0
 while True:
-    if prev_delay > FRAME_LENGTH*2:
-        pass
-        #print("Frame Skip! Performance aint looking good")
-    start = time.time()
-    turn_order = bool(random.getrandbits(1))
-    if (FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE):
-        if turn_order:
-            p1.update()
-            p2.update()
-        else:
-            p2.update()
-            p1.update()
-    end = time.time()
-    new_delay = (end-start)*10**3
-    #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
-    if (new_delay/1000) < FRAME_LENGTH/1000:
-        time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
-    prev_delay = new_delay
+        if prev_delay > FRAME_LENGTH*2:
+            pass
+            #print("Frame Skip! Performance aint looking good")
+        start = time.time()
+        turn_order = bool(random.getrandbits(1))
+        if (FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE):
+            ui.update()
+            if turn_order:
+                p1.update()
+                p2.update()
+            else:
+                p2.update()
+                p1.update()
+        end = time.time()
+        new_delay = (end-start)*10**3
+        #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
+        if (new_delay/1000) < FRAME_LENGTH/1000:
+            time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
+        prev_delay = new_delay
+    
+        p1.hp -= p1.decreaseHp
+        p2.hp -= p2.decreaseHp
+        p1.decreaseHp = 0
+        p2.decreaseHp = 0
 screen.mainloop()
