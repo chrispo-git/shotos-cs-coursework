@@ -37,7 +37,43 @@ AIR_MOVE = 15.0
 SPECIAL_LW_INIT_Y = 45.0
 SPECIAL_LW_INIT_X = 10.0
 
+SPECIAL_S_X = 20.0
+
 BUFFER_FRAMES = 1
+
+#Collisions!
+PUSHBOXES = [11.5,-25,14]
+PUSHING_FORCE = 5
+char_pos = [[0,0], [0,0]]
+
+#hitbox hurtbox interactions
+DEFAULT_Y_KNOCKBACK = 20 + GRAVITY
+KB_DECAY_MULTIPLIER = 0.8
+force_hit_now = False
+PUSHBACK = 15
+BLOCK_KB_MUL = 0.5
+AIR_BLOCK_HITSTUN_MUL = 1.5
+
+hurtbox = [
+    [0,0,0,0], 
+    [0,0,0,0]
+]
+hurtbox_2 = [
+    [0,0,0,0], 
+    [0,0,0,0]
+]
+
+
+hitbox = [
+    [0,0,0,0], 
+    [0,0,0,0]
+]
+
+
+hitbox_properties = [ 
+    [0,0,0,0,0,0], 
+    [0,0,0,0,0,0]
+]
 
 ANIMATION_LIST = [
     
@@ -110,8 +146,8 @@ ANIMATION_LIST = [
         ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Attack
-        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 2, 10, 0], [5, 22, -12, 1]],
-        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 2, 10, 0], [5, 22, -12, 1]],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 2, 10, 0, 1], [5, 22, -12, 1]],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 2, 10, 0, 1], [5, 22, -12, 1]],
         ["sprites/F00_Attack_1.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
         ["sprites/F00_Attack_4.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
         ["sprites/F00_Attack_5.gif", [-11.5,11.5,-25,14], None, None, None],
@@ -120,20 +156,20 @@ ANIMATION_LIST = [
     [ #AttackLw
         ["sprites/F00_AttackLw_0.gif", [-11.5,11.5,-25,2], None, None, None],
         ["sprites/F00_AttackLw_1.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 3, -25, -12]],
-        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 28, -25, -12], [-1, 1, 3, 15, 0], [3, 3, -25, -12]],
-        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]],
-        ["sprites/F00_AttackLw_3.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]],
-        ["sprites/F00_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None, [3, 30, -25, -12]]
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 25, -25, -12], [-1, 1, 4, 15, 0, 1], [3, 28, -25, -12]],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 25, -25, -12], [-1, 1, 4, 15, 0, 1], [3, 28, -25, -12]],
+        ["sprites/F00_AttackLw_2.gif", [-11.5,11.5,-25,2], None, None, [3, 28, -25, -12]],
+        ["sprites/F00_AttackLw_3.gif", [-11.5,11.5,-25,2], None, None, [3, 28, -25, -12]],
+        ["sprites/F00_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None, [3, 28, -25, -12]]
     ],
     [ #AttackAir
         ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
         ["sprites/F00_AttackAir_1.gif", [-11.5,11.5,-20,12], None, None, None],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
-        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 28, -10, 3]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 28, -10, 3]],
         ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
@@ -152,12 +188,17 @@ ANIMATION_LIST = [
         ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
         ["sprites/F00_CrouchGuard_1.gif", [-11.5,11.5,-25,2], None, None, None]
     ],
+    [ #GuardAir
+        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None]
+    ],
     [ #SpecialLw
         ["sprites/F00_SpecialLw_0.gif", [-11.5,11.5,-25,4], None, None, None],
         ["sprites/F00_SpecialLw_1.gif", None, None, None, None],
-        ["sprites/F00_SpecialLw_2.gif", None, [7, 18, -10, 5], [0, 3, 10, 20, 80], None],
-        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80], None],
-        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80], None],
+        ["sprites/F00_SpecialLw_2.gif", None, [7, 18, -10, 5], [0, 3, 10, 20, 80, 3], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80, 3], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 15, -8, 25], [0, 3, 10, 20, 80, 3], None],
         ["sprites/F00_SpecialLw_3.gif", [-11.5,11.5,-22,25], None, None, None],
         ["sprites/F00_SpecialLw_4.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialLw_5.gif", [-11.5,11.5,-25,14], None, None, None],
@@ -167,13 +208,32 @@ ANIMATION_LIST = [
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #SpecialS
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None]
     ]
 ]
 
 
 #Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2]
 # , [hitbox x1, hitbox x2, hitbox y1, hitbox y2]
-# , [hit_height, damage, hitstun, kb_speed_x, kb_speed_y] - hit height is (-1 Low, 1 High, 0 Mid)
+# , [hit_height, damage, hitstun, kb_speed_x, kb_speed_y, blockstun] - hit height is (-1 Low, 1 High, 0 Mid)
 # , [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2] Second set of hurtboxess, used for hurtbox extensions on moves
 def get_anim_ID(name: str) -> int:
         global ANIMATION_LIST_LABEL
@@ -200,7 +260,9 @@ ANIMATION_LIST_LABEL = [
     "Hitstun",
     "Guard",
     "CrouchGuard",
-    "SpecialLw"
+    "GuardAir",
+    "SpecialLw",
+    "SpecialS"
 ]
 
 ACTIONABLE_LIST = [
@@ -213,42 +275,13 @@ SPECIAL_CANCEL_LIST = [
     get_anim_ID("Attack"), get_anim_ID("AttackLw")
 ]
 
-#Collisions!
-PUSHBOXES = [11.5,-25,14]
-PUSHING_FORCE = 5
-char_pos = [[0,0], [0,0]]
-
-#hitbox hurtbox interactions
-DEFAULT_Y_KNOCKBACK = 20 + GRAVITY
-KB_DECAY_MULTIPLIER = 0.8
-force_hit_now = False
-PUSHBACK = 15
-BLOCK_KB_MUL = 0.5
-BLOCK_HITSTUN_MUL = 0.5
-
-hurtbox = [
-    [0,0,0,0], 
-    [0,0,0,0]
-]
-hurtbox_2 = [
-    [0,0,0,0], 
-    [0,0,0,0]
+BLOCKING_LIST = [
+    get_anim_ID("Guard"), get_anim_ID("CrouchGuard"), get_anim_ID("GuardAir")
 ]
 
-
-hitbox = [
-    [0,0,0,0], 
-    [0,0,0,0]
-]
-
-
-hitbox_properties = [ 
-    [0,0,0,0,0], 
-    [0,0,0,0,0]
-]
 
 #Debug options
-ENABLE_HITBOXES = False
+ENABLE_HITBOXES = True
 FRAME_STEP = False
 SPACE_TO_PAUSE = True
 
@@ -512,7 +545,9 @@ class player:
                 self.isBlockstun = True
                 self.moveXThisFrame *= BLOCK_KB_MUL
                 self.moveYThisFrame = 0
-                self.hitstunFrames = int(math.floor(self.hitstunFrames*BLOCK_HITSTUN_MUL))
+                self.hitstunFrames = int(math.floor(enemy_properties[5]))
+                if self.isJump:
+                    self.hitstunFrames = int(math.floor(enemy_properties[5]*AIR_BLOCK_HITSTUN_MUL))
                 
             self.isHitstun = True
 
@@ -585,6 +620,8 @@ class player:
                     if self.isBlockstun:
                         if self.isCrouch:
                             self.set_new_anim_by_ID(get_anim_ID("CrouchGuard"))
+                        elif self.isJump:
+                            self.set_new_anim_by_ID(get_anim_ID("GuardAir"))
                         else:
                             self.set_new_anim_by_ID(get_anim_ID("Guard"))
                     else:
@@ -774,7 +811,7 @@ class player:
             if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
                 self.set_new_anim_by_ID(get_anim_ID("SpecialLw"))
             elif keyboard.is_pressed(self.controls[1]) or keyboard.is_pressed(self.controls[0]):
-                dummy = 0
+                self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
             else:
                 dummy = 0
     
@@ -794,6 +831,16 @@ class player:
         elif self.frame > 3:
             self.moveYThisFrame = self.lastmoveY - GRAVITY
             self.moveXThisFrame = self.lastmoveX * 0.8
+            
+    def specialS(self):
+        if self.animListID != get_anim_ID("SpecialS"):
+            return
+        
+        direction_mul = 1.0
+        if self.is_left:
+            direction_mul = -1.0
+        
+        self.moveXThisFrame = SPECIAL_S_X*direction_mul
                     
     def set_pushback(self):
         if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack")]:
@@ -845,12 +892,16 @@ class player:
                 self.set_new_anim_by_ID()
                 
     def check_block(self):
-        if self.isJump:
-            self.isBlocking = False
+        #if self.isJump:
+            #self.isBlocking = False
         if self.isHitstun:
             return
         if self.hitstunFrames > 0:
             return
+        if not (self.animListID in ACTIONABLE_LIST or self.animListID in BLOCKING_LIST):
+            self.isBlocking = False
+            return
+        
         if not self.is_left:
             if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
                 self.isBlocking = True
@@ -883,6 +934,7 @@ class player:
             self.air()
             self.dash()
             self.specialLw()
+            self.specialS()
             self.animate()
 
 
