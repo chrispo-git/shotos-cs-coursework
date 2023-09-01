@@ -253,6 +253,46 @@ ANIMATION_LIST = [
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
+    [ #SpecialN1
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN1_2.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 11, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_3.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_5.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_4.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 13, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_5.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_4.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_2.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 14, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_3.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_2.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_4.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 10, 25, 25, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN1_5.gif", [-12,16,-25,14], None, [0, 0.4, 5, 35, 45, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN_6.gif", [-12,16,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-12,16,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_7.gif", [-12,16,-25,14], None, None, None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #SpecialN2
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN2_2.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 11, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_3.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_5.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_4.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 13, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_5.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_4.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_2.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 14, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_3.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_2.gif", [-12,16,-25,14], None, [0, 0.4, 10, 0, -1, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_4.gif", [-12,16,-25,14], [17, 30, -8, 4], [0, 0.4, 10, 25, 25, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN2_5.gif", [-12,16,-25,14], None, [0, 0.4, 5, 35, 45, 2], [17, 35, -15, 5]],
+        ["sprites/F00_SpecialN_6.gif", [-12,16,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-12,16,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_7.gif", [-12,16,-25,14], None, None, None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
     [ #SpecialS
         ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
         ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
@@ -309,6 +349,8 @@ ANIMATION_LIST_LABEL = [
     "CrouchGuard",
     "GuardAir",
     "SpecialLw",
+    "SpecialN1",
+    "SpecialN2",
     "SpecialS"
 ]
 
@@ -329,7 +371,7 @@ BLOCKING_LIST = [
 
 
 #Debug options
-ENABLE_HITBOXES = True
+ENABLE_HITBOXES = False
 FRAME_STEP = False
 SPACE_TO_PAUSE = True
 
@@ -901,7 +943,10 @@ class player:
             elif keyboard.is_pressed(self.controls[1]) or keyboard.is_pressed(self.controls[0]):
                 self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
             else:
-                dummy = 0
+                if self.playerNum == 1:
+                    self.set_new_anim_by_ID(get_anim_ID("SpecialN1"))
+                else:
+                    self.set_new_anim_by_ID(get_anim_ID("SpecialN2"))
     
     def specialLw(self):
         if self.animListID != get_anim_ID("SpecialLw"):
