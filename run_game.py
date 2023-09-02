@@ -1264,8 +1264,6 @@ class battleUI:
         self.p1HP.shape("sprites/hpbar.gif")
         self.p1HP.stamp()
 
-
-        
         self.p2HP.clear()
         self.p2HP.penup()
         if p2.hp > 0:
@@ -1308,13 +1306,11 @@ def get_controls_from_txt() -> list:
         i = i.split(" ")
         while len(i) < 7:
             i.append("_")
-        print(i)
         controls[x] = i
     
     return controls
 
 controlsList = get_controls_from_txt()
-print(controlsList[0])
 
 p1 = player(
     1,
@@ -1373,4 +1369,6 @@ while youwin == False:
             sys.exit()
 
 ui.update()
+time.sleep(3)
+
 screen.mainloop()     

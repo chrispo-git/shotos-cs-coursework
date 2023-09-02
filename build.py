@@ -17,6 +17,7 @@ def empty_folder(folder):
 empty_folder(r'dist')
 shutil.copytree(r"sprites", r"dist\sprites")
 shutil.copytree(r"reverse_sprites", r"dist\reverse_sprites")
+shutil.copytree(r"menu", r"dist\menu")
 shutil.copy(r"controls.txt", r"dist\controls.txt")
 
 
