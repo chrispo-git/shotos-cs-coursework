@@ -19,7 +19,10 @@ def check_click_pos(x,y):
     if y < MIN_Y or y > MAX_Y:
         return 
     if x >= OFFLINE[0] and x <= OFFLINE[1]:
-        run_game.run()
+        try:
+            run_game.run()
+        except Exception:
+            sys.exit()
     elif x >= ONLINE[0] and x <= ONLINE[1]:
         dummy = 0
     elif x >= TRAINING[0] and x <= TRAINING[1]:
@@ -36,7 +39,10 @@ def run(auto=False):
     screen.addshape("menu/main.gif")
     screen.clearscreen()
     if auto:
-        run_game.run()
+        try:
+            run_game.run()
+        except Exception:
+            sys.exit()
     menuUI = turtle.Turtle()
     menuUI.shape("menu/main.gif")
     screen.onscreenclick(check_click_pos)
