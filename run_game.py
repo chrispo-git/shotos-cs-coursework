@@ -8,13 +8,14 @@ import image_reverser
 import random
 import math
 import sys
+import menu
 
 image_reverser.reverse()
 
 #CONSTANTS
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
-BOX_SIZE = [330, 360]
+BOX_SIZE = [325, 360]
 FRAME_LENGTH = 60.0
 
 #Character constants
@@ -294,23 +295,23 @@ ANIMATION_LIST = [
         ["sprites/Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #SpecialS
-        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
-        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
-        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
-        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,2], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
-        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None],
-        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None],
-        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None],
-        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,4], None, None, None]
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None]
     ]
 ]
 
@@ -371,32 +372,13 @@ BLOCKING_LIST = [
 
 
 #Debug options
-ENABLE_HITBOXES = False
+ENABLE_HITBOXES = True
 FRAME_STEP = False
 SPACE_TO_PAUSE = True
 
 
 #Hitbox/Hurtbox Drawing
 
-if ENABLE_HITBOXES:
-    p1_hurtbox_draw = turtle.Turtle()
-    p1_hurtbox_draw.color("green")
-    p1_hurtbox_draw.hideturtle()
-    p1_hurtbox_draw2 = turtle.Turtle()
-    p1_hurtbox_draw2.color("green")
-    p1_hurtbox_draw2.hideturtle()
-    p1_hitbox_draw = turtle.Turtle()
-    p1_hitbox_draw.color("red")
-    p1_hitbox_draw.hideturtle()
-    p2_hurtbox_draw = turtle.Turtle()
-    p2_hurtbox_draw.color("green")
-    p2_hurtbox_draw.hideturtle()
-    p2_hurtbox_draw2 = turtle.Turtle()
-    p2_hurtbox_draw2.color("green")
-    p2_hurtbox_draw2.hideturtle()
-    p2_hitbox_draw = turtle.Turtle()
-    p2_hitbox_draw.color("red")
-    p2_hitbox_draw.hideturtle()
 
 def rectangle(turtle, points):
     points = [
@@ -415,32 +397,18 @@ def rectangle(turtle, points):
         turtle.goto(i[0], i[1])
     turtle.penup()
 
-def draw_boxes():
+def draw_boxes(screen, p1hurt, p1hurt2, p1hit, p2hurt, p2hurt2, p2hit):
     screen.tracer(0)
-    rectangle(p1_hurtbox_draw, hurtbox[0])
-    rectangle(p2_hurtbox_draw, hurtbox[1])
-    rectangle(p1_hurtbox_draw2, hurtbox_2[0])
-    rectangle(p2_hurtbox_draw2, hurtbox_2[1])
-    rectangle(p1_hitbox_draw, hitbox[0])
-    rectangle(p2_hitbox_draw, hitbox[1])
+    rectangle(p1hurt, hurtbox[0])
+    rectangle(p2hurt, hurtbox[1])
+    rectangle(p1hurt2, hurtbox_2[0])
+    rectangle(p2hurt2, hurtbox_2[1])
+    rectangle(p1hit, hitbox[0])
+    rectangle(p2hit, hitbox[1])
     screen.update()
     screen.tracer(10)
         
 
-screen = turtle.Screen()
-screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
-screen.title("Jumpsies")
-screen.bgcolor("white")
-#screen.delay(17)
-for i in ["sprites", "reverse_sprites"]:
-    for root, dirs, files in os.walk(i):
-        #print(files)
-        for filename in files:
-            if filename.endswith(".gif"):
-                #print(filename)
-                #Handles scaling up and stuff
-                larger = PhotoImage(file=f"{i}/{filename}").zoom(SCALE, SCALE)
-                screen.addshape(f"{i}/{filename}", Shape("image", larger))
 #print(screen.getshapes())
 
 class player:
@@ -454,6 +422,7 @@ class player:
         self.playerNum = playerNum
         self.x = x
         self.y = y
+        self.accessOtherPlayer = []
         self.is_left = Left
         self.isCrouch = False
         self.moveXThisFrame = 0.0
@@ -505,6 +474,9 @@ class player:
         self.animate()
 
         self.controls = controls
+    
+    def update_other_list(self, new):
+        self.accessOtherPlayer = new
 
     def update_hit_hurt(self):
         global ANIMATION_LIST
@@ -1055,7 +1027,7 @@ class player:
             if force_hit_now and not self.hasHit and not hitbox_properties[-(self.playerNum)] == None:
                 force_hit_now = False
                 #print("Has Forced a hit")
-                other = accessOtherPlayer[self.playerNum - 1]
+                other = self.accessOtherPlayer[self.playerNum - 1]
                 other.maxHitstun = hitbox_properties[-(self.playerNum)][2]
                 self.start_hitstun()
 
@@ -1167,7 +1139,7 @@ class player:
                 #print(f"{newXVal}, {newYVal}")
 
                 #Forces players to stay within fighting area
-                if abs(x+self.moveXThisFrame) < BOX_SIZE[0]:
+                if abs(x+self.moveXThisFrame) < BOX_SIZE[0]-4:
                     newXVal = x+self.moveXThisFrame
                 
                 newYVal = y+self.moveYThisFrame
@@ -1197,10 +1169,10 @@ class player:
                 self.x = newXVal
                 self.y = newYVal
 
-                if self.x > BOX_SIZE[0]:
-                    self.x = BOX_SIZE[0]
-                if self.x < -BOX_SIZE[0]:
-                    self.x = -BOX_SIZE[0]
+                if self.x > BOX_SIZE[0]-4:
+                    self.x = BOX_SIZE[0]-4
+                if self.x < -BOX_SIZE[0] +4:
+                    self.x = -BOX_SIZE[0] +4
                 if self.y < 0:
                     self.y = 0
                 self.turtle.setpos(self.x, self.y)
@@ -1212,15 +1184,16 @@ class player:
 
             
             #self.update_hit_hurt()
-            if ENABLE_HITBOXES:
-                draw_boxes()
 
             char_pos[self.playerNum - 1][0] = self.x 
             char_pos[self.playerNum - 1][1] = self.y 
             #print(char_pos)
 
 class battleUI:
-    def __init__(self):
+    def __init__(self, screen, p1Turtle, p2Turtle):
+        self.screen = screen
+        self.p1 = p1Turtle
+        self.p2 = p2Turtle
         self.p1HP = turtle.Turtle()
         self.p2HP = turtle.Turtle()
         self.youWin = turtle.Turtle()
@@ -1243,16 +1216,20 @@ class battleUI:
         self.hp_start_x = 50
         self.hp_start_y = 175
         self.hp_bar_thickness = 2*SCALE
-        
     
+    def clear(self):
+        self.p1HP.clear()
+        self.p2HP.clear()
+        self.youWin.clear()
+
     def update_healthbar(self):
-        p1_hp_length = (p1.hp/HEALTH) * self.hp_bar_length
-        p2_hp_length = (p2.hp/HEALTH) * self.hp_bar_length
-        screen.tracer(0)
+        p1_hp_length = (self.p1.hp/HEALTH) * self.hp_bar_length
+        p2_hp_length = (self.p2.hp/HEALTH) * self.hp_bar_length
+        self.screen.tracer(0)
         self.p1HP.clear()
         self.p1HP.penup()
         self.p1HP.goto(-self.hp_start_x, self.hp_start_y  - self.hp_bar_thickness)
-        if p1.hp > 0:
+        if self.p1.hp > 0:
             self.p1HP.fillcolor("cyan")
             self.p1HP.begin_fill()
             self.p1HP.goto(-self.hp_start_x, self.hp_start_y + self.hp_bar_thickness)
@@ -1266,7 +1243,7 @@ class battleUI:
 
         self.p2HP.clear()
         self.p2HP.penup()
-        if p2.hp > 0:
+        if self.p2.hp > 0:
             self.p2HP.goto(self.hp_start_x, self.hp_start_y)
             self.p2HP.fillcolor("red")
             self.p2HP.begin_fill()
@@ -1279,23 +1256,25 @@ class battleUI:
         self.p2HP.shape("sprites/hpbar.gif")
         self.p2HP.stamp()
 
-        screen.update()
-        screen.tracer(10)
+        self.screen.update()
+        self.screen.tracer(10)
     
     def update(self):
         self.update_healthbar()
-        if youwin:
+        if self.p1.hp <= 0 or self.p2.hp <= 0:
             player = 1
-            if p2.hp > p1.hp:
+            if self.p2.hp > self.p1.hp:
                 player = 2
             self.youWin.shape(f"sprites/p{player}_win.gif")
             self.youWin.stamp()
 
-
-def init_controls(players: list):
-    for i in players:
-        screen.onkey(i.left(), i.controls[0])
-        screen.onkey(i.right(), i.controls[1])
+def rematch(x,y):
+    if abs(x) > 25:
+        return
+    if y > 13 and y < 40:
+        menu.run(True)
+    if y > -60 and y < -33:
+        menu.run()
 
 def get_controls_from_txt() -> list:
     f = open("controls.txt")
@@ -1310,65 +1289,190 @@ def get_controls_from_txt() -> list:
     
     return controls
 
-controlsList = get_controls_from_txt()
+def pause_update(pause_turtle, controls):
+    shape = pause_turtle.shape()
+    up = [controls[0][2], controls[1][2]]
+    down = [controls[0][3], controls[1][3]]
+    accept = [controls[0][4], controls[1][4]]
+    if shape in ["menu/pause_1.gif", "menu/pause_2.gif", "menu/pause_3.gif"]:
+        if keyboard.is_pressed(up[0]) or keyboard.is_pressed(up[1]):
+            if shape == "menu/pause_2.gif":
+                pause_turtle.shape("menu/pause_1.gif")
+                time.sleep(0.2)
+            if shape == "menu/pause_3.gif":
+                pause_turtle.shape("menu/pause_2.gif")
+                time.sleep(0.2)
+        if keyboard.is_pressed(down[0]) or keyboard.is_pressed(down[1]):
+            if shape == "menu/pause_1.gif":
+                pause_turtle.shape("menu/pause_2.gif")
+                time.sleep(0.2)
+            if shape == "menu/pause_2.gif":
+                pause_turtle.shape("menu/pause_3.gif")
+                time.sleep(0.2)
+        if keyboard.is_pressed(accept[0]) or keyboard.is_pressed(accept[1]):
+            if shape == "menu/pause_1.gif":
+                pause_turtle.shape("menu/movelist.gif")
+            if shape == "menu/pause_2.gif":
+                return 2
+            if shape == "menu/pause_3.gif":
+                menu.run()
+            
 
-p1 = player(
-    1,
-    -150, 0,
-    #["a", "d", "w", "s", "f", "g", "h"],
-    controlsList[0],
-    False
-)
-p2 = player(
-    2,
-    150, 0,
-    #["left", "right", "up", "down", ".", "/", "shift"],
-    controlsList[1],
-    True
-)
 
-accessOtherPlayer = [p2, p1]
+def run(enable_hitboxes=False):
+    controlsList = get_controls_from_txt()
+    turtle.TurtleScreen._RUNNING=True
+    screen = turtle.Screen()
+    screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
+    screen.title("Jumpsies")
+    screen.bgcolor("white")
+    screen.clearscreen()
+    #screen.delay(17)
+    for i in ["sprites", "reverse_sprites"]:
+        for root, dirs, files in os.walk(i):
+            #print(files)
+            for filename in files:
+                if filename.endswith(".gif"):
+                    #print(filename)
+                    #Handles scaling up and stuff
+                    larger = PhotoImage(file=f"{i}/{filename}").zoom(SCALE, SCALE)
+                    screen.addshape(f"{i}/{filename}", Shape("image", larger))
+    for root, dirs, files in os.walk("menu"):
+        for filename in files:
+            if filename.endswith(".gif"):
+                screen.addshape(f"menu/{filename}")
 
-youwin = False
+    screen.tracer(0)
+    if enable_hitboxes:
+        p1_hurtbox_draw = turtle.Turtle()
+        p1_hurtbox_draw.color("green")
+        p1_hurtbox_draw.hideturtle()
+        p1_hurtbox_draw2 = turtle.Turtle()
+        p1_hurtbox_draw2.color("green")
+        p1_hurtbox_draw2.hideturtle()
+        p1_hitbox_draw = turtle.Turtle()
+        p1_hitbox_draw.color("red")
+        p1_hitbox_draw.hideturtle()
+        p2_hurtbox_draw = turtle.Turtle()
+        p2_hurtbox_draw.color("green")
+        p2_hurtbox_draw.hideturtle()
+        p2_hurtbox_draw2 = turtle.Turtle()
+        p2_hurtbox_draw2.color("green")
+        p2_hurtbox_draw2.hideturtle()
+        p2_hitbox_draw = turtle.Turtle()
+        p2_hitbox_draw.color("red")
+        p2_hitbox_draw.hideturtle()
+    
 
-ui = battleUI()
+
+    p1 = player(
+        1,
+        -150, 0,
+        #["a", "d", "w", "s", "f", "g", "h"],
+        controlsList[0],
+        False
+    )
+    p2 = player(
+        2,
+        150, 0,
+        #["left", "right", "up", "down", ".", "/", "shift"],
+        controlsList[1],
+        True
+    )
+
+    accessOtherPlayer = [p2, p1]
+    p1.update_other_list(accessOtherPlayer)
+    p2.update_other_list(accessOtherPlayer)
+
+    youwin = False
+
+    ui = battleUI(screen, p1, p2)
+    
+    ground = turtle.Turtle()
+    ground.penup()
+    ground.pensize(5)
+    ground.goto(-1000,-125)
+    ground.pendown()
+    ground.goto(1000,-125)
+    ground.penup()
+
+    pause_ui = turtle.Turtle()
+    pause_ui.penup()
+    pause_ui.goto(-4,4)
+    pause_ui.hideturtle()
+    pause_ui.shape("menu/pause_1.gif")
 
 
-prev_delay = 0.0
-while youwin == False:
-        try:
-            if prev_delay > FRAME_LENGTH*2:
-                pass
-                print("Frame Skip! Performance aint looking good")
+    ui.update()
+    p1.update()
+    p2.update()
+    p1.update()
+    p2.update()
+    screen.tracer(10)
+    screen.update()
+    paused = False
+    pause_release = False
 
-            start = time.time()
-            turn_order = bool(random.getrandbits(1))
-            if ((FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE)):
-                ui.update()
-                if turn_order:
-                    p1.update()
-                    p2.update()
-                else:
-                    p2.update()
-                    p1.update()
-            end = time.time()
-            new_delay = (end-start)*10**3
-            #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
-            if (new_delay/1000) < FRAME_LENGTH/1000:
-                time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
-            prev_delay = new_delay
-        
-            p1.hp -= p1.decreaseHp
-            p2.hp -= p2.decreaseHp
-            p1.decreaseHp = 0
-            p2.decreaseHp = 0
-            if p1.hp <= 0 or p2.hp <= 0:
-                youwin = True
-        except Exception as exc:
-            print(exc)
-            sys.exit()
+    prev_delay = 0.0
+    while youwin == False:
+            try:
+                if prev_delay > FRAME_LENGTH*2:
+                    pass
+                    print("Frame Skip! Performance aint looking good")
 
-ui.update()
-time.sleep(3)
+                start = time.time()
+                turn_order = bool(random.getrandbits(1))
+                if not paused and (((FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE))):
+                    pause_ui.hideturtle()
+                    pause_ui.shape("menu/pause_1.gif")
+                    if not keyboard.is_pressed("escape"):
+                        pause_release = True
+                    if keyboard.is_pressed("escape") and pause_release:
+                        pause_release = False
+                        paused = True
+                    ui.update()
+                    if turn_order:
+                        p1.update()
+                        p2.update()
+                    else:
+                        p2.update()
+                        p1.update()
+                    if enable_hitboxes:
+                        draw_boxes(screen, p1_hurtbox_draw, p1_hurtbox_draw2, p1_hitbox_draw, p2_hurtbox_draw, p2_hurtbox_draw2, p2_hitbox_draw)
+                elif paused:
+                    pause_ui.showturtle()
+                    ui.clear()
+                    screen.update()
+                    if not keyboard.is_pressed("escape"):
+                        pause_release = True
+                    if keyboard.is_pressed("escape") and pause_release:
+                        pause_release = False
+                        paused = False
+                    if pause_update(pause_ui, controlsList) == 2:
+                        paused = False
+                end = time.time()
+                new_delay = (end-start)*10**3
+                #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
+                if (new_delay/1000) < FRAME_LENGTH/1000:
+                    time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
+                prev_delay = new_delay
+            
+                p1.hp -= p1.decreaseHp
+                p2.hp -= p2.decreaseHp
+                p1.decreaseHp = 0
+                p2.decreaseHp = 0
+                if p1.hp <= 0 or p2.hp <= 0:
+                    youwin = True
+            except Exception as exc:
+                print(exc)
+                sys.exit()
 
-screen.mainloop()     
+    ui.update()
+    screen.update()
+    time.sleep(2)
+    screen.tracer(0)
+    resetti = turtle.Turtle()
+    resetti.shape("menu/rematch.gif")
+    screen.update()
+    screen.onscreenclick(rematch)
+    screen.mainloop()     
