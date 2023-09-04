@@ -26,7 +26,10 @@ def check_click_pos(x,y):
     elif x >= ONLINE[0] and x <= ONLINE[1]:
         dummy = 0
     elif x >= TRAINING[0] and x <= TRAINING[1]:
-        dummy = 0
+        try:
+            run_game.run(True)
+        except Exception:
+            sys.exit()
     elif x >= SETTINGS[0] and x <= SETTINGS[1]:
         dummy = 0
 
