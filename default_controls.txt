@@ -1,0 +1,2 @@
+a d w s f g h
+left right up down . / shift
