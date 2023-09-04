@@ -27,7 +27,7 @@ def check_click_pos(x,y):
         dummy = 0
     elif x >= TRAINING[0] and x <= TRAINING[1]:
         try:
-            run_game.run(True)
+            run_game.run([True,True,False,0,0])
         except Exception:
             sys.exit()
     elif x >= SETTINGS[0] and x <= SETTINGS[1]:

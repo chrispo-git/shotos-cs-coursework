@@ -48,6 +48,8 @@ PUSHING_FORCE = 5
 char_pos = [[0,0], [0,0]]
 
 #hitbox hurtbox interactions
+HP_RESTORE_DURATION = 45
+BLOCK_TIME = 11
 DEFAULT_Y_KNOCKBACK = 20 + GRAVITY
 KB_DECAY_MULTIPLIER = 0.8
 force_hit_now = False
@@ -148,8 +150,8 @@ ANIMATION_LIST = [
         ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Attack
-        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 3, 10, 0, 1], [5, 22, -12, 1]],
-        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 3, 10, 0, 1], [5, 22, -12, 1]],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 3, 6, 0, 1], [5, 22, -12, 1]],
+        ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 3, 6, 0, 1], [5, 22, -12, 1]],
         ["sprites/F00_Attack_1.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
         ["sprites/F00_Attack_4.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
         ["sprites/F00_Attack_5.gif", [-11.5,11.5,-25,14], None, None, None],
@@ -241,7 +243,7 @@ ANIMATION_LIST = [
     [ #SpecialLw
         ["sprites/F00_SpecialLw_0.gif", [-11.5,11.5,-25,4], None, None, None],
         ["sprites/F00_SpecialLw_1.gif", None, None, None, None],
-        ["sprites/F00_SpecialLw_2.gif", None, [7, 20, -10, 5], [0, 4, 10, 20, 100, 3], None],
+        ["sprites/F00_SpecialLw_2.gif", None, [7, 28, -10, 5], [0, 4, 10, 20, 100, 3], None],
         ["sprites/F00_SpecialLw_3.gif", None, [7, 18, -8, 25], [0, 4, 10, 20, 100, 3], None],
         ["sprites/F00_SpecialLw_3.gif", None, [7, 18, -8, 25], [0, 4, 10, 20, 100, 3], None],
         ["sprites/F00_SpecialLw_3.gif", [-11.5,11.5,-22,25], None, None, None],
@@ -306,8 +308,8 @@ ANIMATION_LIST = [
         ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
-        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 1, 7, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 1, 5, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 1, 5, 45, 50, 1], [3, 26, -10, 3]],
         ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
@@ -372,7 +374,6 @@ BLOCKING_LIST = [
 
 
 #Debug options
-ENABLE_HITBOXES = True
 FRAME_STEP = False
 SPACE_TO_PAUSE = True
 
@@ -417,7 +418,8 @@ class player:
         x: int, y: int,
         #sprite, frame, animList,
         controls: list, #Controls expressed as [left, right, up, down, light, heavy, special]
-        Left: bool
+        Left: bool,
+        Training_settings: list
     ):
         self.playerNum = playerNum
         self.x = x
@@ -432,6 +434,8 @@ class player:
         self.frame = 0
         self.animListID = 0
         self.sprite = "sprites/Idle_0.gif"
+        self.training_settings = Training_settings
+        self.start_blocking_now = 0
 
         #Jump Attributes
         self.isJump = False
@@ -453,6 +457,7 @@ class player:
         #Hitstun
         self.isHitstun = False
         self.isBlockstun = False
+        self.isLeaveBlockstun = False
         self.isBlocking = False
         self.hitstunFrames = 0
         self.maxHitstun = 0
@@ -582,6 +587,16 @@ class player:
         high_low = enemy_properties[0]
         if self.isHitstun and not self.isBlockstun:
             return False
+        
+        if (self.training_settings[3] == 1 or self.start_blocking_now > 0) and (self.animListID in ACTIONABLE_LIST or self.animListID in BLOCKING_LIST) and self.playerNum == 2:
+            if self.training_settings[3] == 2:
+                self.start_blocking_now = BLOCK_TIME
+
+            self.isBlocking = True
+            if high_low == -1:
+                self.isCrouch = True
+            return True
+
         if self.isBlocking:
             if high_low == 0:
                 return True 
@@ -620,6 +635,8 @@ class player:
             self.lastmoveY = self.moveYThisFrame
             if not self.did_i_block_that():
                 self.jumpDir = 0
+                if self.training_settings[3] == 2:
+                    self.start_blocking_now = BLOCK_TIME
                 if enemy_properties[4] > 0 and not self.isJump:
                     self.isJump = True
                     self.lastmoveY = self.moveYThisFrame + GRAVITY
@@ -715,6 +732,7 @@ class player:
     
     def right(self):
         global ANIMATION_LIST
+        global SPECIAL_CANCEL_LIST
         global WALK_SPEED
         #print(f"[{self.x}, {self.y}]")
         if self.isJump == False and not self.isHitstun:
@@ -730,7 +748,7 @@ class player:
                     if self.forwarddashTimer == 0:
                         self.forwarddashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
                             self.forwarddashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
                             self.moveXThisFrame = FDASH_SPEED
@@ -744,7 +762,7 @@ class player:
                     if self.backdashTimer == 0:
                         self.backdashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
                             self.backdashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("BackDash"))
                             self.moveXThisFrame = BDASH_SPEED
@@ -766,7 +784,7 @@ class player:
                     if self.forwarddashTimer == 0:
                         self.forwarddashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
                             self.forwarddashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
                             self.moveXThisFrame = -FDASH_SPEED
@@ -780,7 +798,7 @@ class player:
                     if self.backdashTimer == 0:
                         self.backdashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or self.doPushback:
+                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
                             self.backdashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("BackDash"))
                             self.moveXThisFrame = -BDASH_SPEED
@@ -1100,6 +1118,9 @@ class player:
                 
             if self.heavyBuffer > 0:
                 self.heavyBuffer -= 1
+            
+            if self.start_blocking_now > 0:
+                self.start_blocking_now -= 1
                 
             if self.hitstunFrames > 0:
                 #print("still in hitstun")
@@ -1110,12 +1131,34 @@ class player:
             if self.forwarddashTimer > 0:
                 self.forwarddashTimer -= 1
 
+            if self.training_settings[4] != 0 and self.playerNum == 2:
+                if (self.isHitstun and self.training_settings[3] == 0) or self.isBlockstun:
+                    self.isLeaveBlockstun = True
+                elif self.isLeaveBlockstun and self.animListID in ACTIONABLE_LIST :
+                    if self.training_settings[4] == 1 and not self.isJump:
+                        #print("force jab")
+                        self.set_new_anim_by_ID(get_anim_ID("Attack"))
+                        self.isLeaveBlockstun = False
+                    elif self.training_settings[4] == 2 and not self.isJump:
+                        #print("force dp")
+                        self.set_new_anim_by_ID(get_anim_ID("SpecialLw"))
+                        self.isLeaveBlockstun = False
+                    elif self.training_settings[4] == 3 and not self.isJump:
+                        #print("force backdash")
+                        self.set_new_anim_by_ID(get_anim_ID("BackDash"))
+                        self.isLeaveBlockstun = False
+                        if self.is_left:
+                            self.moveXThisFrame = BDASH_SPEED
+                        else:
+                            self.moveXThisFrame = -BDASH_SPEED
+
             if self.hitstunFrames <= 0:
                 self.isHitstun = False
                 self.isBlockstun = False
                 if self.y < 5:
                     self.y = 0
             
+
             if not self.isHitstun:
                 self.maxHitstun = False
 
@@ -1289,37 +1332,100 @@ def get_controls_from_txt() -> list:
     
     return controls
 
-def pause_update(pause_turtle, controls):
+def pause_update(pause_turtle, controls, training_settings:list):
     shape = pause_turtle.shape()
     up = [controls[0][2], controls[1][2]]
     down = [controls[0][3], controls[1][3]]
     accept = [controls[0][4], controls[1][4]]
-    if shape in ["menu/pause_1.gif", "menu/pause_2.gif", "menu/pause_3.gif"]:
-        if keyboard.is_pressed(up[0]) or keyboard.is_pressed(up[1]):
-            if shape == "menu/pause_2.gif":
-                pause_turtle.shape("menu/pause_1.gif")
-                time.sleep(0.2)
-            if shape == "menu/pause_3.gif":
-                pause_turtle.shape("menu/pause_2.gif")
-                time.sleep(0.2)
-        if keyboard.is_pressed(down[0]) or keyboard.is_pressed(down[1]):
-            if shape == "menu/pause_1.gif":
-                pause_turtle.shape("menu/pause_2.gif")
-                time.sleep(0.2)
-            if shape == "menu/pause_2.gif":
-                pause_turtle.shape("menu/pause_3.gif")
-                time.sleep(0.2)
-        if keyboard.is_pressed(accept[0]) or keyboard.is_pressed(accept[1]):
-            if shape == "menu/pause_1.gif":
-                pause_turtle.shape("menu/movelist.gif")
-            if shape == "menu/pause_2.gif":
-                return 2
-            if shape == "menu/pause_3.gif":
-                menu.run()
-            
+    if not training_settings[0]:
+        if shape in ["menu/pause_1.gif", "menu/pause_2.gif", "menu/pause_3.gif"]:
+            if keyboard.is_pressed(up[0]) or keyboard.is_pressed(up[1]):
+                if shape == "menu/pause_2.gif":
+                    pause_turtle.shape("menu/pause_1.gif")
+                    time.sleep(0.2)
+                if shape == "menu/pause_3.gif":
+                    pause_turtle.shape("menu/pause_2.gif")
+                    time.sleep(0.2)
+            if keyboard.is_pressed(down[0]) or keyboard.is_pressed(down[1]):
+                if shape == "menu/pause_1.gif":
+                    pause_turtle.shape("menu/pause_2.gif")
+                    time.sleep(0.2)
+                if shape == "menu/pause_2.gif":
+                    pause_turtle.shape("menu/pause_3.gif")
+                    time.sleep(0.2)
+            if keyboard.is_pressed(accept[0]) or keyboard.is_pressed(accept[1]):
+                if shape == "menu/pause_1.gif":
+                    pause_turtle.shape("menu/movelist.gif")
+                if shape == "menu/pause_2.gif":
+                    return 2
+                if shape == "menu/pause_3.gif":
+                    menu.run()
+    else:
+        if shape in ["menu/training_pause_1.gif", "menu/training_pause_2.gif", "menu/training_pause_3.gif"]:
+            if keyboard.is_pressed(up[0]) or keyboard.is_pressed(up[1]):
+                if shape == "menu/training_pause_2.gif":
+                    pause_turtle.shape("menu/training_pause_1.gif")
+                    time.sleep(0.2)
+                if shape == "menu/training_pause_3.gif":
+                    pause_turtle.shape("menu/training_pause_2.gif")
+                    time.sleep(0.2)
+            if keyboard.is_pressed(down[0]) or keyboard.is_pressed(down[1]):
+                if shape == "menu/training_pause_1.gif":
+                    pause_turtle.shape("menu/training_pause_2.gif")
+                    time.sleep(0.2)
+                if shape == "menu/training_pause_2.gif":
+                    pause_turtle.shape("menu/training_pause_3.gif")
+                    time.sleep(0.2)
+            if keyboard.is_pressed(accept[0]) or keyboard.is_pressed(accept[1]):
+                if shape == "menu/training_pause_1.gif":
+                    pause_turtle.shape("menu/training_menu.gif")
+                    return 1
+                if shape == "menu/training_pause_2.gif":
+                    return 2
+                if shape == "menu/training_pause_3.gif":
+                    menu.run()
+
+class setting_icon:
+    def __init__(self, pos:int, list_update:list, list_num:int, screen):
+        self.pos = pos
+        self.turtle = turtle.Turtle()
+        self.turtle.penup()
+        self.turtle.goto(0, pos)
+        self.list_update = list_update
+        self.list_num = list_num
+        self.turtle.shape(self.list_update[list_num])
+        self.screen = screen
+    
+    def onclick_update(self, x, y):
+        self.list_num += 1
+        if self.list_num >= len(self.list_update):
+            self.list_num = 0
+        self.turtle.shape(self.list_update[self.list_num])
+        self.screen.update()
+        #print("update")
+
+class save_icon:
+    def __init__(self, pos:int, turtle_list:list, screen):
+        self.pos = pos
+        self.turtle = turtle.Turtle()
+        self.turtle.penup()
+        self.turtle.goto(0, pos)
+        self.turtle_list = turtle_list
+        self.turtle.shape("menu/training_save.gif")
+        self.screen = screen
+    
+    def onclick_update(self, x, y):
+        new_training_settings = [True]
+        new_training_settings.append(bool(self.turtle_list[0].list_num))
+        new_training_settings.append(bool(self.turtle_list[1].list_num))
+        new_training_settings.append(int(self.turtle_list[2].list_num))
+        new_training_settings.append(int(self.turtle_list[3].list_num))
+        #print(new_training_settings)
+        run(new_training_settings)
 
 
-def run(enable_hitboxes=False):
+
+def run(training_settings=[False,False,False,0,0]):
     controlsList = get_controls_from_txt()
     turtle.TurtleScreen._RUNNING=True
     screen = turtle.Screen()
@@ -1327,6 +1433,7 @@ def run(enable_hitboxes=False):
     screen.title("Jumpsies")
     screen.bgcolor("white")
     screen.clearscreen()
+    #[Is in training mode, Enable hitboxes]
     #screen.delay(17)
     for i in ["sprites", "reverse_sprites"]:
         for root, dirs, files in os.walk(i):
@@ -1343,7 +1450,7 @@ def run(enable_hitboxes=False):
                 screen.addshape(f"menu/{filename}")
 
     screen.tracer(0)
-    if enable_hitboxes:
+    if training_settings[1] and training_settings[0]:
         p1_hurtbox_draw = turtle.Turtle()
         p1_hurtbox_draw.color("green")
         p1_hurtbox_draw.hideturtle()
@@ -1370,14 +1477,16 @@ def run(enable_hitboxes=False):
         -150, 0,
         #["a", "d", "w", "s", "f", "g", "h"],
         controlsList[0],
-        False
+        False,
+        training_settings
     )
     p2 = player(
         2,
         150, 0,
         #["left", "right", "up", "down", ".", "/", "shift"],
         controlsList[1],
-        True
+        True,
+        training_settings
     )
 
     accessOtherPlayer = [p2, p1]
@@ -1396,11 +1505,20 @@ def run(enable_hitboxes=False):
     ground.goto(1000,-125)
     ground.penup()
 
+    if training_settings[2]:
+        frame_advance = turtle.Turtle()
+        frame_advance.penup()
+        frame_advance.goto(0,-150)
+        frame_advance.shape("menu/frame_advance.gif")
+
     pause_ui = turtle.Turtle()
     pause_ui.penup()
     pause_ui.goto(-4,4)
     pause_ui.hideturtle()
-    pause_ui.shape("menu/pause_1.gif")
+    if not training_settings[0]:
+        pause_ui.shape("menu/pause_1.gif")
+    else:
+        pause_ui.shape("menu/training_pause_1.gif")
 
 
     ui.update()
@@ -1414,17 +1532,22 @@ def run(enable_hitboxes=False):
     pause_release = False
 
     prev_delay = 0.0
+    p1HPRestore = 0
+    p2HPRestore = 0
     while youwin == False:
             try:
                 if prev_delay > FRAME_LENGTH*2:
                     pass
-                    print("Frame Skip! Performance aint looking good")
+                    #print("Frame Skip! Performance aint looking good")
 
                 start = time.time()
                 turn_order = bool(random.getrandbits(1))
-                if not paused and (((FRAME_STEP and  keyboard.is_pressed("space")) or (SPACE_TO_PAUSE and not keyboard.is_pressed("space")) or (not FRAME_STEP and not SPACE_TO_PAUSE))):
+                if not paused and (((training_settings[2] and  keyboard.is_pressed("space")) or (not training_settings[2]))):
                     pause_ui.hideturtle()
-                    pause_ui.shape("menu/pause_1.gif")
+                    if training_settings[0]:
+                        pause_ui.shape("menu/training_pause_1.gif")
+                    else:
+                        pause_ui.shape("menu/pause_1.gif")
                     if not keyboard.is_pressed("escape"):
                         pause_release = True
                     if keyboard.is_pressed("escape") and pause_release:
@@ -1437,34 +1560,91 @@ def run(enable_hitboxes=False):
                     else:
                         p2.update()
                         p1.update()
-                    if enable_hitboxes:
+                    if training_settings[0] and training_settings[1]:
                         draw_boxes(screen, p1_hurtbox_draw, p1_hurtbox_draw2, p1_hitbox_draw, p2_hurtbox_draw, p2_hurtbox_draw2, p2_hitbox_draw)
                 elif paused:
                     pause_ui.showturtle()
                     ui.clear()
+                    if training_settings[0] and training_settings[1]:
+                        p1_hurtbox_draw.clear()
+                        p1_hurtbox_draw2.clear()
+                        p1_hitbox_draw.clear()
+                        p2_hurtbox_draw.clear()
+                        p2_hurtbox_draw2.clear()
+                        p2_hitbox_draw.clear()
                     screen.update()
                     if not keyboard.is_pressed("escape"):
                         pause_release = True
                     if keyboard.is_pressed("escape") and pause_release:
                         pause_release = False
                         paused = False
-                    if pause_update(pause_ui, controlsList) == 2:
+                    pause_val = pause_update(pause_ui, controlsList, training_settings)
+                    if pause_val == 2:
                         paused = False
+                    if pause_val == 1:
+                        screen.clearscreen()
+                        screen.tracer(0)
+                        block = ["menu/block_0.gif", "menu/block_1.gif", "menu/block_2.gif"]
+                        hitbox = ["menu/hitbox_false.gif", "menu/hitbox_true.gif"]
+                        frame = ["menu/frame_false.gif", "menu/frame_true.gif"]
+                        reversal = ["menu/reversal_0.gif", "menu/reversal_1.gif", "menu/reversal_2.gif", "menu/reversal_3.gif"]
+                        bg = turtle.Turtle()
+                        bg.shape("menu/training_menu.gif")
+                        setting_hitbox = setting_icon(90, hitbox, int(training_settings[1]), screen)
+                        setting_frame = setting_icon(30, frame, int(training_settings[2]), screen)
+                        setting_block = setting_icon(-30, block, int(training_settings[3]), screen)
+                        setting_reversal = setting_icon(-90, reversal, int(training_settings[4]), screen)
+                        save = save_icon(-150, [setting_hitbox,setting_frame,setting_block,setting_reversal], screen)
+                        screen.update()
+                        screen.tracer(10)
+                        setting_hitbox.turtle.onclick(setting_hitbox.onclick_update)
+                        setting_frame.turtle.onclick(setting_frame.onclick_update)
+                        setting_block.turtle.onclick(setting_block.onclick_update)
+                        setting_reversal.turtle.onclick(setting_reversal.onclick_update)
+                        save.turtle.onclick(save.onclick_update)
+                        screen.mainloop()
+                elif training_settings[2] and not keyboard.is_pressed("space"):
+                    pause_ui.hideturtle()
+                    if training_settings[0]:
+                        pause_ui.shape("menu/training_pause_1.gif")
+                    else:
+                        pause_ui.shape("menu/pause_1.gif")
+                    if not keyboard.is_pressed("escape"):
+                        pause_release = True
+                    if keyboard.is_pressed("escape") and pause_release:
+                        pause_release = False
+                        paused = True
+                    ui.update()
                 end = time.time()
                 new_delay = (end-start)*10**3
                 #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
                 if (new_delay/1000) < FRAME_LENGTH/1000:
                     time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
                 prev_delay = new_delay
-            
+
                 p1.hp -= p1.decreaseHp
                 p2.hp -= p2.decreaseHp
+                if training_settings[0] and (p1.hp < 1 or p1HPRestore >= HP_RESTORE_DURATION):
+                    p1.hp = HEALTH
+                    p1HPRestore = 0
+                if training_settings[0] and (p2.hp < 1 or p2HPRestore >= HP_RESTORE_DURATION):
+                    p2.hp = HEALTH
+                    p2HPRestore = 0
+                if p1.decreaseHp == 0:
+                    p1HPRestore += 1
+                else:
+                    p1HPRestore = 0
+                if p2.decreaseHp == 0:
+                    p2HPRestore += 1
+                else:
+                    p2HPRestore = 0
+                
                 p1.decreaseHp = 0
                 p2.decreaseHp = 0
                 if p1.hp <= 0 or p2.hp <= 0:
                     youwin = True
             except Exception as exc:
-                print(exc)
+                #print(exc)
                 sys.exit()
 
     ui.update()
