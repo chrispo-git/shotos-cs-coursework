@@ -81,7 +81,6 @@ def run(training_settings=[False,False,False,0,0]):
         char_turtle.append(f)
         char_pos_x.append(char_turtle[i].xcor())
         char_pos_y.append(char_turtle[i].ycor())
-    print(char_pos_x)
     screen.tracer(10)
 
     p1_show = turtle.Turtle()

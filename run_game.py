@@ -235,6 +235,7 @@ class player:
         self.rightPressed = False
         self.backdashTimer = 0
         self.forwarddashTimer = 0
+        self.disableJostle = False
 
         #For Hadouken
         self.hadouTimer = 0
@@ -517,7 +518,7 @@ class player:
                     if self.forwarddashTimer == 0:
                         self.forwarddashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
+                        if self.animListID in ACTIONABLE_LIST:
                             self.forwarddashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
                             self.moveXThisFrame = FDASH_SPEED
@@ -531,7 +532,7 @@ class player:
                     if self.backdashTimer == 0:
                         self.backdashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
+                        if self.animListID in ACTIONABLE_LIST:
                             self.backdashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("BackDash"))
                             self.moveXThisFrame = BDASH_SPEED
@@ -552,7 +553,7 @@ class player:
                     if self.forwarddashTimer == 0:
                         self.forwarddashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
+                        if self.animListID in ACTIONABLE_LIST:
                             self.forwarddashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
                             self.moveXThisFrame = -FDASH_SPEED
@@ -566,7 +567,7 @@ class player:
                     if self.backdashTimer == 0:
                         self.backdashTimer = DASH_WINDOW
                     else:
-                        if self.animListID in ACTIONABLE_LIST or (self.doPushback and self.animListID in SPECIAL_CANCEL_LIST):
+                        if self.animListID in ACTIONABLE_LIST:
                             self.backdashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("BackDash"))
                             self.moveXThisFrame = -BDASH_SPEED
@@ -725,13 +726,27 @@ class player:
             
     def specialS(self):
         if self.animListID != get_anim_ID("SpecialS"):
+            if self.char_id == 1:
+                self.disableJostle = False
             return
         
         direction_mul = 1.0
         if self.is_left:
             direction_mul = -1.0
         
-        self.moveXThisFrame = SPECIAL_S_X*direction_mul
+        if self.char_id == 0:
+            self.moveXThisFrame = SPECIAL_S_X*direction_mul
+        if self.char_id == 1:
+            self.isCrouch = True
+            if self.frame >= 2 and self.frame < 10:
+                self.moveXThisFrame = SPECIAL_S_X*direction_mul*1.2
+                self.disableJostle = True
+            else:
+                self.disableJostle = False
+                if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
+                    self.is_left = False
+                if self.is_left == False and self.x > char_pos[-(self.playerNum)][0]:
+                    self.is_left = True
 
     def specialN(self):
         if self.animListID != get_anim_ID("SpecialN"):
@@ -993,7 +1008,7 @@ class player:
                 #if top_pushbox and bottom_pushbox:
                     #print(f"same height: [{(char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x}, {self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])}]")
                     #print(f"X Pos for other one: {char_pos[-(self.playerNum)][0]}")
-                if (left_pushbox or right_pushbox) and (top_pushbox and bottom_pushbox):
+                if (left_pushbox or right_pushbox) and (top_pushbox and bottom_pushbox) and not self.disableJostle:
                     #print("pushing!")
                     if ((self.moveXThisFrame > 0 and left_pushbox) or (self.moveXThisFrame < 0 and right_pushbox)):
                         newXVal = x
