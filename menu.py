@@ -4,6 +4,7 @@ import sys
 import run_game
 import turtle
 import keyboard
+import css
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
 
@@ -32,14 +33,14 @@ def check_click_pos(x,y):
             return 
         if x >= OFFLINE[0] and x <= OFFLINE[1]:
             try:
-                run_game.run()
+                css.run([False,False,False,0,0])
             except Exception:
                 sys.exit()
         elif x >= ONLINE[0] and x <= ONLINE[1]:
             dummy = 0
         elif x >= TRAINING[0] and x <= TRAINING[1]:
             try:
-                run_game.run([True,True,False,0,0])
+                css.run([True,True,False,0,0])
             except Exception:
                 sys.exit()
         elif x >= SETTINGS[0] and x <= SETTINGS[1]:
@@ -184,7 +185,7 @@ def run_settings_screen():
     screen_instance.mainloop()
 
 
-def run(auto=False):
+def run(auto=False,chars=[]):
     global is_controls
     global screen_instance
     is_controls = False
@@ -205,7 +206,7 @@ def run(auto=False):
     screen.clearscreen()
     if auto:
         try:
-            run_game.run()
+            run_game.run([False,False,False,0,0], chars)
         except Exception:
             sys.exit()
     menuUI = turtle.Turtle()
