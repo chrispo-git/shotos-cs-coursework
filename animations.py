@@ -465,3 +465,249 @@ KEN = [
         ["sprites/F01_SpecialS_5.gif", [-11.5,11.5,-25,2], None, None, None]
     ]
 ]
+SEAN = [
+    
+    [ #Idle
+        ["sprites/F02_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Idle_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Idle_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Idle_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Idle_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Idle_4.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #WalkF
+        ["sprites/F02_Forward_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Forward_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Forward_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Forward_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Forward_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Forward_5.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #WalkB
+        ["sprites/F02_Backward_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Backward_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Backward_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Backward_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Backward_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Backward_5.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #Crouch
+        ["sprites/F02_Crouch_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_Crouch_1.gif", [-11.5,11.5,-25,2], None, None, None]
+    ],
+    [ #CrouchWait
+        ["sprites/F02_Crouch_1.gif", [-11.5,11.5,-25,2], None, None, None]
+    ],
+    [ #CrouchRv
+        ["sprites/F02_Crouch_1.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_Crouch_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #JumpSquat
+        ["sprites/F02_JumpSquat_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_JumpSquat_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #ForwardDash
+        ["sprites/F00_ForwardDash_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ForwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ForwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ForwardDash_3.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #BackDash
+        ["sprites/F00_BackwardDash_0.gif", None, None, None, None],
+        ["sprites/F00_BackwardDash_0.gif", None, None, None, None],
+        ["sprites/F00_BackwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_BackwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #Air
+        ["sprites/F02_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Air_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Air_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Air_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Air_1.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #Attack
+        ["sprites/F02_Attack_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Attack_1.gif", [-11.5,11.5,-25,14], [7, 23, -2, 3], [0, 1, 3, 6, 0, 1], [7, 25, -4, 5]],
+        ["sprites/F02_Attack_1.gif", [-11.5,11.5,-25,14], [7, 23, -2, 3], [0, 1, 3, 6, 0, 1], [7, 25, -4, 5]],
+        ["sprites/F02_Attack_1.gif", [-11.5,11.5,-25,14], None, None, [7, 25, -4, 5]],
+        ["sprites/F02_Attack_2.gif", [-11.5,11.5,-25,14], None, None, [7, 25, -4, 5]],
+        ["sprites/F02_Attack_3.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #AttackLw
+        ["sprites/F02_AttackLw_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_AttackLw_1.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 24, -25, -15], [-1, 1, 4, 0, 80, 1], [3, 30, -25, -10]],
+        ["sprites/F02_AttackLw_2.gif", [-11.5,11.5,-25,2], [3, 24, -25, -15], [-1, 1, 4, 0, 80, 1], [3, 30, -25, -10]],
+        ["sprites/F02_AttackLw_2.gif", [-11.5,11.5,-25,2], None, None, [3, 28, -25, -12]],
+        ["sprites/F02_AttackLw_3.gif", [-11.5,11.5,-25,2], None, None, [3, 28, -25, -12]],
+        ["sprites/F02_AttackLw_4.gif", [-11.5,11.5,-25,2], None, None, [3, 28, -25, -12]],
+        ["sprites/F02_Crouch_1.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_Crouch_1.gif", [-11.5,11.5,-25,2], None, None, None]
+    ],
+    [ #AttackAir
+        ["sprites/F00_AttackAir_0.gif", [-11.5,11.5,-23,12], None, None, None],
+        ["sprites/F00_AttackAir_1.gif", [-11.5,11.5,-23,12], [3, 15, -12, 3], [1, 1, 3, 10, 15, 3], [2, 16, -13, 4]],
+        ["sprites/F00_AttackAir_1.gif", [-11.5,11.5,-23,12], [3, 15, -12, 3], [1, 1, 3, 10, 15, 3], [2, 16, -13, 4]],
+        ["sprites/F00_AttackAir_1.gif", [-11.5,11.5,-23,12], [3, 15, -12, 3], [1, 1, 3, 10, 15, 3], [2, 16, -13, 4]],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-23,12], None, None, None],
+        ["sprites/F00_AttackAir_2.gif", [-11.5,11.5,-23,12], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #HeavyN
+        ["sprites/F02_Idle_0.gif", [-11.5,7,-25,14], None, None, None],
+        ["sprites/F02_Heavy_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Heavy_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Heavy_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Heavy_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Heavy_2.gif", [-11.5,11.5,-25,14], [2, 23, -13, 7], [1, 4, 8, 10, -45, 1], [2, 25, -13, 8]],
+        ["sprites/F02_Heavy_2.gif", [-11.5,11.5,-25,14], [2, 23, -13, 7], [1, 4, 8, 10, -45, 1], [2, 25, -13, 8]],
+        ["sprites/F02_Heavy_2.gif", [-11.5,11.5,-25,14], None, None, [2, 25, -13, 8]],
+        ["sprites/F02_Heavy_3.gif", [-11.5,7,-25,14], None, None, None],
+        ["sprites/F02_Heavy_3.gif", [-11.5,7,-25,14], None, None, None],
+        ["sprites/F02_Idle_1.gif", [-11.5,7,-25,14], None, None, None],
+        ["sprites/F02_Idle_0.gif", [-11.5,7,-25,14], None, None, None]
+    ],
+    [ #HeavyLw
+        ["sprites/F00_HeavyLw_0.gif", [-11.5,11.5,-25,3], None, None, None],
+        ["sprites/F00_HeavyLw_1.gif", [-11.5,11.5,-25,-10], None, None, None],
+        ["sprites/F00_HeavyLw_2.gif", [-11.5,11.5,-25,-10], None, None, None],
+        ["sprites/F00_HeavyLw_3.gif", [-11.5,8,-25,-10], [3, 13, -2, 17], [0, 2.75, 4, 55, 55, 3], None],
+        ["sprites/F00_HeavyLw_3.gif", [-11.5,8,-25,-10], [3, 13, -2, 17], [0, 2.75, 4, 55, 55, 3], None],
+        ["sprites/F00_HeavyLw_3.gif", [-11.5,8,-25,-10], [3, 13, -2, 17], [0, 2.75, 4, 55, 55, 3], None],
+        ["sprites/F00_HeavyLw_2.gif", [-11.5,11.5,-25,3], None, None, None],
+        ["sprites/F00_HeavyLw_2.gif", [-11.5,11.5,-25,3], None, None, None],
+        ["sprites/F00_HeavyLw_1.gif", [-11.5,11.5,-25,3], None, None, None],
+        ["sprites/F00_HeavyLw_0.gif", [-11.5,11.5,-25,3], None, None, None],
+    ],
+    [ #HeavyAir
+        ["sprites/F00_HeavyAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
+        ["sprites/F00_HeavyAir_1.gif", [-11.5,11.5,-20,12], None, None, None],
+        ["sprites/F00_HeavyAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 30, -10, 3]],
+        ["sprites/F00_HeavyAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 30, -10, 3]],
+        ["sprites/F00_HeavyAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 30, -10, 3]],
+        ["sprites/F00_HeavyAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 30, -10, 3]],
+        ["sprites/F00_HeavyAir_2.gif", [-11.5,11.5,-20,12], [-5, 28, -10, 3], [1, 2, 6, 15, 0, 3], [-5, 30, -10, 3]],
+        ["sprites/F00_HeavyAir_0.gif", [-11.5,11.5,-20,12], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #Hitstun
+        ["sprites/F00_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Hitstun_1.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #Guard
+        ["sprites/F00_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Guard_1.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #CrouchGuard
+        ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_CrouchGuard_1.gif", [-11.5,11.5,-25,2], None, None, None]
+    ],
+    [ #GuardAir
+        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None]
+    ],
+    [ #SpecialLw
+        ["sprites/F00_SpecialLw_0.gif", [-11.5,11.5,-25,4], None, None, None],
+        ["sprites/F00_SpecialLw_1.gif", [-11.5,11.5,-25,4], None, None, None],
+        ["sprites/F00_SpecialLw_2.gif", None, [7, 28, -10, 5], [0, 3, 10, 20, 100, 3], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 18, -8, 25], [0, 3, 10, 20, 100, 3], None],
+        ["sprites/F00_SpecialLw_3.gif", None, [7, 18, -8, 25], [0, 3, 10, 20, 100, 3], None],
+        ["sprites/F00_SpecialLw_3.gif", [-11.5,11.5,-22,25], None, None, None],
+        ["sprites/F00_SpecialLw_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialLw_5.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialLw_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialLw_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #SpecialN
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN8.gif", [-11.5,11.5,-25,14], [17, 27, -4, 2], [0, 1, 3, 0, -1, 2], None],
+        ["sprites/F00_SpecialN9.gif", [-11.5,11.5,-25,14], [30, 40, -4, 2], [0, 0.75, 3, 0, -1, 2], None],
+        ["sprites/F00_SpecialN10.gif", [-11.5,11.5,-25,14], [43, 53, -4, 2], [0, 0.75, 3, 0, -1, 2], None],
+        ["sprites/F00_SpecialN11.gif", [-11.5,11.5,-25,14], [56, 66, -4, 2], [0, 0.5, 3, 0, -1, 2], None],
+        ["sprites/F00_SpecialN12.gif", [-11.5,11.5,-25,14], [69, 79, -4, 2], [0, 0.5, 3, 0, -1, 2], None],
+        ["sprites/F00_SpecialN13.gif", [-11.5,11.5,-25,14], [82, 92, -4, 2], [0, 0.5, 3, 0, -1, 2], None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], [82, 92, -4, 2], [0, 0.5, 3, 0, -1, 2], None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_7.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #SpecialNEmpty
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_6.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialN_7.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #SpecialS
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,-10], None, None, None],
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,-10], None, None, None],
+        ["sprites/F00_SpecialS_0.gif", [-11.5,11.5,-25,-10], None, None, None],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 2, 10, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_5.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_4.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 0.5, 5, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_1.gif", [-11.5,11.5,-25,14], [3, 25, -6, 3], [0, 0.5, 5, 45, 50, 1], [3, 26, -10, 3]],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #ThrowWhiff
+        ["sprites/F00_ThrowWhiff_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], [0, 20, -15, 0], [2, 0, 13, -45, 45, 0], None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], [0, 20, -15, 0], [2, 0, 13, -45, 45, 0], None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #ThrowF
+        ["sprites/F00_ThrowF_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], [-250, 250, -100, 100], [2, 2, 10, 40, 45, 0], None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], [-250, 250, -100, 100], [2, 2, 10, 40, 45, 0], None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ]
+]

@@ -174,7 +174,7 @@ def draw_boxes(screen, p1hurt, p1hurt2, p1hit, p2hurt, p2hurt2, p2hit):
     screen.update()
     screen.tracer(10)
         
-CHAR_ANIMS = [animations.RYU, animations.KEN]
+CHAR_ANIMS = [animations.RYU, animations.KEN, animations.SEAN]
 #print(screen.getshapes())
 
 class player:
@@ -747,6 +747,15 @@ class player:
             elif self.frame > 3:
                 self.moveYThisFrame = self.lastmoveY - GRAVITY
                 self.moveXThisFrame = self.lastmoveX * 0.8
+        if self.char_id == 2:
+            if self.frame == 3:
+                self.isJump = True
+                self.jumpDir = 0
+                self.moveYThisFrame = SPECIAL_LW_INIT_Y*0.9
+                self.moveXThisFrame = SPECIAL_LW_INIT_X*direction_mul
+            elif self.frame > 3:
+                self.moveYThisFrame = self.lastmoveY - GRAVITY
+                self.moveXThisFrame = self.lastmoveX * 0.7
             
     def specialS(self):
         if self.animListID != get_anim_ID("SpecialS"):

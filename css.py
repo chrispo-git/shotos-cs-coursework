@@ -13,7 +13,7 @@ SCREEN_HEIGHT = 450
 FRAME_LENGTH = 5.0
 SCALE = 5
 
-CHARACTER_AMOUNT = 2
+CHARACTER_AMOUNT = 3
 
 image_reverser.reverse()
 
