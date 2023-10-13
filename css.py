@@ -12,12 +12,13 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
 FRAME_LENGTH = 5.0
 SCALE = 5
+
 CHARACTER_AMOUNT = 2
 
 image_reverser.reverse()
 
 def update(turtle, controls,char_pos_x,char_pos_y) -> int:
-    if keyboard.is_pressed(controls[0]) and not keyboard.is_pressed(controls[1]):
+    if keyboard.is_pressed(controls[0]) and not keyboard.is_pressed(controls[1]): #Similar logic to left/right in run_game.py
         turtle.goto(turtle.xcor()-2, turtle.ycor())
 
     if keyboard.is_pressed(controls[1]) and not keyboard.is_pressed(controls[0]):
@@ -29,20 +30,21 @@ def update(turtle, controls,char_pos_x,char_pos_y) -> int:
     if keyboard.is_pressed(controls[3]) and not keyboard.is_pressed(controls[2]):
         turtle.goto(turtle.xcor(), turtle.ycor()-2)
     
-    if keyboard.is_pressed(controls[5]):
+    if keyboard.is_pressed(controls[5]): #Cancel button is the heavy button
         return None
     
-    if keyboard.is_pressed(controls[4]):
+    if keyboard.is_pressed(controls[4]): #Attack button is the light button
         x = turtle.xcor()
         y = turtle.ycor()
         for i in range(0, len(char_pos_x)):
             if abs(char_pos_x[i]-x) < 50 and abs(char_pos_y[i]-y) < 50:
-                return i
+                return i #returns char_id based on cursort pos when accept button is pressed
     
     return -1
 
 
 def run(training_settings=[False,False,False,0,0]):
+    #Screen setup
     turtle.TurtleScreen._RUNNING=True
     screen = turtle.Screen()
     screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -76,7 +78,7 @@ def run(training_settings=[False,False,False,0,0]):
     for i in range(0,CHARACTER_AMOUNT):
         f = turtle.Turtle()
         f.penup()
-        f.goto(-100 +((i/(CHARACTER_AMOUNT-1))*200), 25)
+        f.goto(-100 +((i/(CHARACTER_AMOUNT-1))*200), 25) #Programatically prints out their heads with equal spacing
         f.shape(f"sprites/F0{i}_Head.gif")
         char_turtle.append(f)
         char_pos_x.append(char_turtle[i].xcor())
@@ -130,9 +132,9 @@ def run(training_settings=[False,False,False,0,0]):
                     chosen_chars[0] = p1
                 if p2 != -1:
                     chosen_chars[1] = p2
-                if chosen_chars[0] != None:
+                if chosen_chars[0] != None: #If they have a character selected, show that character
                     p1_show.showturtle()
-                    p1_show.shape(f"sprites/F0{chosen_chars[0]}_Idle_0.gif")
+                    p1_show.shape(f"sprites/F0{chosen_chars[0]}_Idle_0.gif") #We can do this because the sprites are properly named!
                     p1_name.showturtle()
                     p1_name.shape(f"menu/F0{chosen_chars[0]}_Name.gif")
                 else:

@@ -226,6 +226,35 @@ RYU = [
         ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_SpecialS_3.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #ThrowWhiff
+        ["sprites/F00_ThrowWhiff_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], [0, 20, -15, 0], [2, 0, 13, -45, 45, 0], None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], [0, 20, -15, 0], [2, 0, 13, -45, 45, 0], None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowWhiff_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
+    ],
+    [ #ThrowF
+        ["sprites/F00_ThrowF_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], [-250, 250, -100, 100], [2, 2, 10, 40, 45, 0], None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], [-250, 250, -100, 100], [2, 2, 10, 40, 45, 0], None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_ThrowF_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F00_Idle_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ]
 ]
 

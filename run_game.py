@@ -83,7 +83,7 @@ hitbox_properties = [
 
 #Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2]
 # , [hitbox x1, hitbox x2, hitbox y1, hitbox y2]
-# , [hit_height, damage, hitstun, kb_speed_x, kb_speed_y, blockstun] - hit height is (-1 Low, 1 High, 0 Mid)
+# , [hit_height, damage, hitstun, kb_speed_x, kb_speed_y, blockstun] - hit height is (-1 Low, 1 High, 0 Mid, 2 unblockable)
 # , [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2] Second set of hurtboxess, used for hurtbox extensions on moves
 def get_anim_ID(name: str) -> int:
         global ANIMATION_LIST_LABEL
@@ -117,7 +117,9 @@ ANIMATION_LIST_LABEL = [
     "SpecialLw",
     "SpecialN",
     "SpecialNEmpty",
-    "SpecialS"
+    "SpecialS",
+    "ThrowWhiff",
+    "ThrowF"
 ]
 
 ACTIONABLE_LIST = [
@@ -219,6 +221,7 @@ class player:
         self.specialBuffer = 0
         self.heavyBuffer = 0
         self.doPushback = False
+        self.buttoncheck = [False,False,False,False,False,False,False]
 
         #Hitstun
         self.isHitstun = False
@@ -353,6 +356,9 @@ class player:
     def did_i_block_that(self):
         enemy_properties = hitbox_properties[-(self.playerNum)]
         high_low = enemy_properties[0]
+        if high_low == 2:
+            return False
+        
         if self.isHitstun and not self.isBlockstun:
             return False
         
@@ -696,6 +702,24 @@ class player:
                 self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
             else:
                 self.set_new_anim_by_ID(get_anim_ID("SpecialN"))
+
+                
+    def throw(self):
+        global ACTIONABLE_LIST
+        global SPECIAL_CANCEL_LIST
+        if self.animListID in ACTIONABLE_LIST and not self.isJump and not self.isCrouch:
+            self.set_new_anim_by_ID(get_anim_ID("ThrowWhiff"))
+            
+    def throw_logic(self):
+        global ACTIONABLE_LIST
+        global SPECIAL_CANCEL_LIST
+        if self.animListID != get_anim_ID("ThrowWhiff") and self.animListID != get_anim_ID("ThrowF"):
+            return
+        
+        if self.doPushback and not self.hasHit and self.animListID == get_anim_ID("ThrowWhiff"):
+            self.set_new_anim_by_ID(get_anim_ID("ThrowF"))
+        
+        #if self.animListID == get_anim_ID("ThrowF"):
     
     def specialLw(self):
         if self.animListID != get_anim_ID("SpecialLw"):
@@ -760,13 +784,15 @@ class player:
                 self.hadouTimer += 1
                     
     def set_pushback(self):
-        if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack"), get_anim_ID("HeavyLw")]:
+        if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack"), get_anim_ID("HeavyLw"), get_anim_ID("ThrowF")]:
             side_mul = 1
             if self.is_left:
                 side_mul = -1
 
             if self.doPushback == True:
                 self.moveXThisFrame = PUSHBACK * side_mul * -1
+                if self.animListID == get_anim_ID("ThrowF"):
+                   self.moveXThisFrame *= 0.7 
 
 
                     
@@ -797,8 +823,8 @@ class player:
     
     def check_correct_side(self):
         global ACTIONABLE_LIST
-        #print(f"[{self.x}, {self.y}]")
         if (self.isJump == False and self.animListID in ACTIONABLE_LIST) or self.animListID == get_anim_ID("JumpSquat"):
+            #Flips you around and puts you into the default animation when crossed up
             if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
                 self.is_left = False
                 self.set_new_anim_by_ID()
@@ -848,57 +874,66 @@ class player:
             self.hitstun_movement()
             self.air()
             self.dash()
+            self.buttoncheck = [keyboard.is_pressed(self.controls[0]),keyboard.is_pressed(self.controls[1]),
+                                keyboard.is_pressed(self.controls[2]), keyboard.is_pressed(self.controls[3]),
+                                keyboard.is_pressed(self.controls[4]), keyboard.is_pressed(self.controls[5]),
+                                keyboard.is_pressed(self.controls[6])
+            ]
 
             #Move specific code
             self.heavyN()
             self.specialLw()
             self.specialS()
             self.specialN()
+            self.throw_logic()
 
             self.animate()
 
-
-            if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
+            if self.buttoncheck[0] and not self.buttoncheck[1]:
                 self.left()
             elif (self.animListID == get_anim_ID("WalkF") and self.is_left != False) or (self.animListID == get_anim_ID("WalkB") and self.is_left != True):
                 if  not self.isHitstun:
-                    self.set_new_anim_by_ID()
+                    self.set_new_anim_by_ID() #Resets you to standing when left no longer pressed
             
-            if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
+            if self.buttoncheck[0] and not self.buttoncheck[1]:
                 self.leftPressed = True
             else:
                 self.leftPressed = False
 
-            if keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
+            if self.buttoncheck[1] and not self.buttoncheck[0]:
                 self.right()
             elif (self.animListID == get_anim_ID("WalkF") and self.is_left != True) or (self.animListID == get_anim_ID("WalkB") and self.is_left != False):
-                self.set_new_anim_by_ID()
+                self.set_new_anim_by_ID() #Resets you to standing when right no longer pressed
                 
                 
-            if keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
-                self.rightPressed = True
+            if self.buttoncheck[1] and not self.buttoncheck[0]:
+                self.rightPressed = True #Set so it can be used to check if the button has just been pressed
             else:
                 self.rightPressed = False
 
                 
-            if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
+            if self.buttoncheck[3] and not self.buttoncheck[2]:
                 self.down()
             elif self.isCrouch:
                 self.uncrouch()
-            if (keyboard.is_pressed(self.controls[2]) and not keyboard.is_pressed(self.controls[3])) or self.jumpBuffer > 0:
+            if (self.buttoncheck[2] and not self.buttoncheck[3]) or self.jumpBuffer > 0:
                 self.up()
                 
-            if (keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5]) and not keyboard.is_pressed(self.controls[6]) and not self.attackPressed) or self.attackBuffer > 0:
+            if (self.buttoncheck[4] and self.buttoncheck[5] and not self.buttoncheck[6]) and not(self.buttoncheck[0] or self.buttoncheck[1]):
+                self.throw()
+
+            if (self.buttoncheck[4] and not self.buttoncheck[5] and not self.buttoncheck[6] and not self.attackPressed) or self.attackBuffer > 0:
                 self.attackPressed = True
                 self.attack()
                 
-            if (keyboard.is_pressed(self.controls[6]) and not keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5]) and not self.specialPressed) or self.specialBuffer > 0:
+            if (self.buttoncheck[6] and not self.buttoncheck[4] and not self.buttoncheck[5] and not self.specialPressed) or self.specialBuffer > 0:
                 self.specialPressed = True
                 self.special()
 
-            if (keyboard.is_pressed(self.controls[5]) and not keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[6]) and not self.heavyPressed) or self.heavyBuffer > 0:
+            if (self.buttoncheck[5] and not self.buttoncheck[4] and not self.buttoncheck[6] and not self.heavyPressed) or self.heavyBuffer > 0:
                 self.heavyPressed = True
                 self.heavy()
+                
             
             if self.attackBuffer > 0:
                 self.attackBuffer -= 1
@@ -975,13 +1010,13 @@ class player:
             if not self.isHitstun:
                 self.maxHitstun = False
 
-            if not keyboard.is_pressed(self.controls[4]):
+            if not self.buttoncheck[4]:
                 self.attackPressed = False
 
-            if not keyboard.is_pressed(self.controls[5]):
+            if not self.buttoncheck[5]:
                 self.heavyPressed = False
 
-            if not keyboard.is_pressed(self.controls[6]):
+            if not self.buttoncheck[6]:
                 self.specialPressed = False
             
             self.set_pushback()
