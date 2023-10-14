@@ -48,7 +48,7 @@ def run(training_settings=[False,False,False,0,0]):
     turtle.TurtleScreen._RUNNING=True
     screen = turtle.Screen()
     screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
-    screen.title("Jumpsies")
+    screen.title("Shotos")
     screen.bgcolor("white")
     screen.clearscreen()
     for i in ["sprites", "reverse_sprites"]:

@@ -193,7 +193,7 @@ def run(auto=False,chars=[]):
     screen = turtle.Screen()
     screen_instance = screen
     screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
-    screen.title("Jumpsies")
+    screen.title("Shotos")
     screen.bgcolor("white")
     for root, dirs, files in os.walk("menu"):
         for filename in files:

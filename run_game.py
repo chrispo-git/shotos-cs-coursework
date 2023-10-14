@@ -10,6 +10,7 @@ import math
 import sys
 import menu
 import animations
+import stats
 
 image_reverser.reverse()
 
@@ -22,12 +23,6 @@ FRAME_LENGTH = 60.0
 #Character constants
 SCALE = 5
 
-HEALTH = 50
-WALK_SPEED = 12.0
-FDASH_SPEED = 42.0
-FDASH_DECEL = 8.0
-BDASH_SPEED = 35.0
-BDASH_DECEL = 8.0
 DASH_WINDOW = 4
 
 JUMP_INITAL = 50.0
@@ -230,7 +225,7 @@ class player:
         self.isBlocking = False
         self.hitstunFrames = 0
         self.maxHitstun = 0
-        self.hp = HEALTH
+        self.hp = stats.HEALTH[self.char_id]
         self.decreaseHp = 0
 
         
@@ -509,11 +504,10 @@ class player:
     
     def right(self):
         global SPECIAL_CANCEL_LIST
-        global WALK_SPEED
         #print(f"[{self.x}, {self.y}]")
         if self.isJump == False and not self.isHitstun:
             if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB")]:
-                self.moveXThisFrame = WALK_SPEED
+                self.moveXThisFrame = stats.WALK_SPEED[self.char_id]
             if self.is_left == False: #If facing left
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkB")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
@@ -527,7 +521,7 @@ class player:
                         if self.animListID in ACTIONABLE_LIST:
                             self.forwarddashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
-                            self.moveXThisFrame = FDASH_SPEED
+                            self.moveXThisFrame = stats.FDASH_SPEED[self.char_id]
             else:
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
@@ -541,14 +535,13 @@ class player:
                         if self.animListID in ACTIONABLE_LIST:
                             self.backdashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("BackDash"))
-                            self.moveXThisFrame = BDASH_SPEED
+                            self.moveXThisFrame = stats.BDASH_SPEED[self.char_id]
 
 
     def left(self):
-        global WALK_SPEED
         if self.isJump == False and not self.isHitstun:
             if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB")]:
-                self.moveXThisFrame = -WALK_SPEED
+                self.moveXThisFrame = -stats.WALK_SPEED[self.char_id]
             if self.is_left == True: #If facing left
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkB")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkF"))
@@ -562,7 +555,7 @@ class player:
                         if self.animListID in ACTIONABLE_LIST:
                             self.forwarddashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("ForwardDash"))
-                            self.moveXThisFrame = -FDASH_SPEED
+                            self.moveXThisFrame = -stats.FDASH_SPEED[self.char_id]
             else:
                 if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF")]:
                     self.set_new_anim_by_ID(get_anim_ID("WalkB"))
@@ -576,7 +569,7 @@ class player:
                         if self.animListID in ACTIONABLE_LIST:
                             self.backdashTimer = 0
                             self.set_new_anim_by_ID(get_anim_ID("BackDash"))
-                            self.moveXThisFrame = -BDASH_SPEED
+                            self.moveXThisFrame = -stats.BDASH_SPEED[self.char_id]
                     
     def down(self):
         #print(f"[{self.x}, {self.y}]")
@@ -627,6 +620,8 @@ class player:
                     
                     if (keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5])):
                         self.attackBuffer = 1
+                    if (keyboard.is_pressed(self.controls[5]) and not keyboard.is_pressed(self.controls[4])):
+                        self.heavyBuffer = 1
                 else:
                     #print("we running")
                     self.moveYThisFrame = self.lastmoveY - GRAVITY
@@ -816,16 +811,16 @@ class player:
 
         if self.animListID == get_anim_ID("ForwardDash"):
             if self.lastmoveX != 0:
-                self.moveXThisFrame = self.lastmoveX - (FDASH_DECEL*side_mul)
+                self.moveXThisFrame = self.lastmoveX - (stats.FDASH_DECEL[self.char_id]*side_mul)
                 
-                if abs(self.lastmoveX) - BDASH_DECEL < 0:
+                if abs(self.lastmoveX) - stats.FDASH_DECEL[self.char_id] < 0:
                     self.moveXThisFrame = 0
 
         if self.animListID == get_anim_ID("BackDash"):
             if self.lastmoveX != 0:
-                self.moveXThisFrame = self.lastmoveX + (BDASH_DECEL*side_mul)
+                self.moveXThisFrame = self.lastmoveX + (stats.BDASH_DECEL[self.char_id]*side_mul)
 
-                if abs(self.lastmoveX) - BDASH_DECEL < 0:
+                if abs(self.lastmoveX) - stats.BDASH_DECEL[self.char_id] < 0:
                     self.moveXThisFrame = 0
 
 
@@ -1005,9 +1000,9 @@ class player:
                         self.set_new_anim_by_ID(get_anim_ID("BackDash"))
                         self.isLeaveBlockstun = False
                         if self.is_left:
-                            self.moveXThisFrame = BDASH_SPEED
+                            self.moveXThisFrame = stats.BDASH_SPEED[self.char_id]
                         else:
-                            self.moveXThisFrame = -BDASH_SPEED
+                            self.moveXThisFrame = -stats.BDASH_SPEED[self.char_id]
 
             if self.hitstunFrames <= 0:
                 self.isHitstun = False
@@ -1123,8 +1118,8 @@ class battleUI:
         self.youWin.clear()
 
     def update_healthbar(self):
-        p1_hp_length = (self.p1.hp/HEALTH) * self.hp_bar_length
-        p2_hp_length = (self.p2.hp/HEALTH) * self.hp_bar_length
+        p1_hp_length = (self.p1.hp/stats.HEALTH[self.p1.char_id]) * self.hp_bar_length
+        p2_hp_length = (self.p2.hp/stats.HEALTH[self.p2.char_id]) * self.hp_bar_length
         self.screen.tracer(0)
         self.p1HP.clear()
         self.p1HP.penup()
@@ -1293,7 +1288,7 @@ def run(training_settings=[False,False,False,0,0], character=[0,0]):
     turtle.TurtleScreen._RUNNING=True
     screen = turtle.Screen()
     screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
-    screen.title("Jumpsies")
+    screen.title("Shotos")
     screen.bgcolor("white")
     screen.clearscreen()
     #[Is in training mode, Enable hitboxes]
@@ -1493,10 +1488,10 @@ def run(training_settings=[False,False,False,0,0], character=[0,0]):
                 p1.hp -= p1.decreaseHp
                 p2.hp -= p2.decreaseHp
                 if training_settings[0] and (p1.hp < 1 or p1HPRestore >= HP_RESTORE_DURATION):
-                    p1.hp = HEALTH
+                    p1.hp = stats.HEALTH[p1.char_id]
                     p1HPRestore = 0
                 if training_settings[0] and (p2.hp < 1 or p2HPRestore >= HP_RESTORE_DURATION):
-                    p2.hp = HEALTH
+                    p2.hp = stats.HEALTH[p2.char_id]
                     p2HPRestore = 0
                 if p1.decreaseHp == 0:
                     p1HPRestore += 1
