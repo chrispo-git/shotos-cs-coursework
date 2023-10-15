@@ -781,11 +781,10 @@ class player:
             self.hadouTimer = 0
             return
         
-        if self.char_id == 0:
-            if self.hadouTimer >= 1:
-                self.set_new_anim_by_ID(get_anim_ID("SpecialNEmpty"), self.frame)
-            if self.doPushback:
-                self.hadouTimer += 1
+        if self.hadouTimer >= 1:
+            self.set_new_anim_by_ID(get_anim_ID("SpecialNEmpty"), self.frame)
+        if self.doPushback:
+            self.hadouTimer += 1
                     
     def set_pushback(self):
         if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack"), get_anim_ID("HeavyLw"), get_anim_ID("ThrowF")]:
