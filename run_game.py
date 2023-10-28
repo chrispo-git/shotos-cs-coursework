@@ -124,8 +124,9 @@ ACTIONABLE_LIST = [
 ]
 
 SPECIAL_CANCEL_LIST = [
-    get_anim_ID("Attack"), get_anim_ID("AttackLw"),
-    get_anim_ID("Heavy"), get_anim_ID("HeavyLw")
+    get_anim_ID("Attack"), get_anim_ID("AttackLw"), get_anim_ID("AttackAir"),
+    get_anim_ID("Heavy"), get_anim_ID("HeavyLw"), get_anim_ID("HeavyAir")
+
 ]
 
 BLOCKING_LIST = [
@@ -646,6 +647,19 @@ class player:
             if self.animListID in ACTIONABLE_LIST:
                     self.set_new_anim_by_ID(get_anim_ID("AttackAir"))
                     
+    def attackLw(self):
+        global ACTIONABLE_LIST
+        if not self.animListID == get_anim_ID("AttackLw"):
+            return
+        
+        if self.char_id == 2:
+            direction_mul = 1.0
+            if self.is_left:
+                direction_mul = -1.0
+
+            if self.frame < 9:
+                self.moveXThisFrame = 18 * direction_mul
+            
     def heavyN(self):
         global ACTIONABLE_LIST
         if not self.animListID == get_anim_ID("Heavy"):
@@ -689,6 +703,8 @@ class player:
         else:
             self.specialBuffer = 0
             if self.isJump:
+                if keyboard.is_pressed(self.controls[1]) or keyboard.is_pressed(self.controls[0]): #Lets you specifically side special in the air!
+                    self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
                 return
 
             if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
@@ -763,31 +779,59 @@ class player:
             direction_mul = -1.0
         
         if self.char_id == 0:
-            self.moveXThisFrame = SPECIAL_S_X*direction_mul
-        if self.char_id == 1:
-            self.isCrouch = True
-            if self.frame >= 2 and self.frame < 10:
+            if self.isJump:
                 self.moveXThisFrame = SPECIAL_S_X*direction_mul*1.2
-                self.disableJostle = True
             else:
-                self.disableJostle = False
-                if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
-                    self.is_left = False
-                if self.is_left == False and self.x > char_pos[-(self.playerNum)][0]:
-                    self.is_left = True
+                self.moveXThisFrame = SPECIAL_S_X*direction_mul
+        if self.char_id == 1:
+            if self.isJump:
+                self.moveXThisFrame = SPECIAL_S_X*direction_mul*1.2
+                if self.frame < 2:
+                    self.frame = 2
+                if self.frame >= 2 and self.frame < 10:
+                    self.disableJostle = True
+                else:
+                    self.disableJostle = False
+                    if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
+                        self.is_left = False
+                    if self.is_left == False and self.x > char_pos[-(self.playerNum)][0]:
+                        self.is_left = True
+            else:
+                self.isCrouch = True
+                if self.frame >= 2 and self.frame < 10:
+                    self.moveXThisFrame = SPECIAL_S_X*direction_mul*1.2
+                    self.disableJostle = True
+                else:
+                    self.disableJostle = False
+                    if self.is_left == True and self.x < char_pos[-(self.playerNum)][0]:
+                        self.is_left = False
+                    if self.is_left == False and self.x > char_pos[-(self.playerNum)][0]:
+                        self.is_left = True
+        if self.char_id == 2:
+            self.moveXThisFrame = SPECIAL_S_X*direction_mul*1.2
 
     def specialN(self):
+        # contains the projectile logic
         if self.animListID != get_anim_ID("SpecialN"):
             self.hadouTimer = 0
             return
         
-        if self.hadouTimer >= 1:
+        if self.hadouTimer >= 1: # If you've hit the opponent with your projectile, switch to the version of the anim where the projectile sprite doesnt exist
             self.set_new_anim_by_ID(get_anim_ID("SpecialNEmpty"), self.frame)
         if self.doPushback:
             self.hadouTimer += 1
                     
     def set_pushback(self):
-        if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack"), get_anim_ID("HeavyLw"), get_anim_ID("ThrowF")]:
+        #Prevents these moves having pushback per character
+        if self.animListID == get_anim_ID("HeavyN") and self.char_id == 0:
+            return
+        if self.animListID == get_anim_ID("AttackLw") and self.char_id == 2:
+            return
+        if self.animListID == get_anim_ID("HeavyLw") and self.char_id == 2:
+            return
+        
+
+        if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack"), get_anim_ID("Heavy"), get_anim_ID("HeavyLw"), get_anim_ID("ThrowF")]:
             side_mul = 1
             if self.is_left:
                 side_mul = -1
@@ -884,6 +928,7 @@ class player:
             ]
 
             #Move specific code
+            self.attackLw()
             self.heavyN()
             self.specialLw()
             self.specialS()

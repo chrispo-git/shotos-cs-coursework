@@ -5,6 +5,7 @@ import run_game
 import turtle
 import keyboard
 import image_reverser
+import menu
 from tkinter import PhotoImage
 from turtle import Shape
 
@@ -158,7 +159,8 @@ def run(training_settings=[False,False,False,0,0]):
                             break
                     if cancel:
                         break
-
+                if keyboard.is_pressed("escape"):
+                    menu.run()
                 end = time.time()
                 new_delay = (end-start)*10**3
                 #print(f"Time taken: {new_delay}ms, normalise: {FRAME_LENGTH - (new_delay)}ms")
