@@ -634,24 +634,24 @@ SEAN = [
         ["sprites/F00_Air_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Hitstun
-        ["sprites/F00_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_Hitstun_1.gif", [-11.5,11.5,-25,14], None, None, None]
+        ["sprites/F02_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Hitstun_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Hitstun_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Guard
-        ["sprites/F00_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_Guard_1.gif", [-11.5,11.5,-25,14], None, None, None]
+        ["sprites/F02_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Guard_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_Guard_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #CrouchGuard
-        ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_CrouchGuard_1.gif", [-11.5,11.5,-25,2], None, None, None]
+        ["sprites/F02_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_CrouchGuard_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_CrouchGuard_1.gif", [-11.5,11.5,-25,2], None, None, None]
     ],
     [ #GuardAir
-        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
-        ["sprites/F00_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None]
+        ["sprites/F02_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None],
+        ["sprites/F02_GuardAir_0.gif", [-11.5,11.5,-25,2], None, None, None]
     ],
     [ #SpecialLw
         ["sprites/F02_SpecialLw_0.gif", [-11.5,11.5,-25,4], None, None, None],
@@ -674,7 +674,7 @@ SEAN = [
         ["sprites/F02_SpecialLw_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F02_SpecialN_1.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F02_SpecialN_1.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F02_SpecialN_2.gif", [-11.5,11.5,-25,14], [1, 11, 23, 33], [0, 3.5, 10, 56, 56, 5], None],
+        ["sprites/F02_SpecialN_2.gif", [-11.5,11.5,-25,14], [1, 16, 10, 33], [0, 3.5, 10, 56, 56, 5], None],
         ["sprites/F02_SpecialN_3.gif", [-11.5,11.5,-25,14], [14, 24, 37, 47], [0, 3.5, 10, 56, 56, 5], None],
         ["sprites/F02_SpecialN_4.gif", [-11.5,11.5,-25,14], [29, 39, 55, 65], [0, 3.5, 10, 56, 56, 5], None],
         ["sprites/F02_SpecialN_5.gif", [-11.5,11.5,-25,14], [35, 45, 61, 71], [0, 3.5, 10, 56, 56, 5], None],
