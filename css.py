@@ -119,7 +119,7 @@ def run(training_settings=[False,False,False,0,0]):
     screen.update()
     prev_delay = 0
     while True:
-            try:
+            #try:
                 if prev_delay > FRAME_LENGTH*2:
                     pass
                     #print("Frame Skip! Performance aint looking good")
@@ -167,7 +167,7 @@ def run(training_settings=[False,False,False,0,0]):
                 if (new_delay/1000) < FRAME_LENGTH/1000:
                     time.sleep(FRAME_LENGTH/1000 - (new_delay/1000))
                 prev_delay = new_delay
-            except Exception as exc:
-                print(exc)
-                sys.exit()
+            #except Exception as exc:
+                #print(exc)
+                #sys.exit()
     run_game.run(training_settings, chosen_chars)

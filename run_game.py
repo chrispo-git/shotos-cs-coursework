@@ -612,16 +612,16 @@ class player:
                 self.set_new_anim_by_ID()
             else:
                 if self.animListID == get_anim_ID("JumpSquat"):
-                    if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
+                    if self.buttoncheck[0] and not self.buttoncheck[1]:
                         self.jumpDir = 1.0
-                    elif keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
+                    elif self.buttoncheck[1] and not self.buttoncheck[0]:
                         self.jumpDir = -1.0
                     else:
                         self.jumpDir = 0.0
                     
-                    if (keyboard.is_pressed(self.controls[4]) and not keyboard.is_pressed(self.controls[5])):
+                    if self.buttoncheck[4] and not self.buttoncheck[5]:
                         self.attackBuffer = 1
-                    if (keyboard.is_pressed(self.controls[5]) and not keyboard.is_pressed(self.controls[4])):
+                    if self.buttoncheck[5] and not self.buttoncheck[4]:
                         self.heavyBuffer = 1
                 else:
                     #print("we running")
@@ -639,7 +639,7 @@ class player:
         if not self.isJump:
             if self.animListID in ACTIONABLE_LIST:
                 self.doPushback = False
-                if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
+                if self.buttoncheck[3] and not self.buttoncheck[2]:
                     self.set_new_anim_by_ID(get_anim_ID("AttackLw"))
                 else:
                     self.set_new_anim_by_ID(get_anim_ID("Attack"))
@@ -687,7 +687,7 @@ class player:
         if not self.isJump:
             if self.animListID in ACTIONABLE_LIST:
                 self.doPushback = False
-                if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
+                if self.buttoncheck[3] and not self.buttoncheck[2]:
                     self.set_new_anim_by_ID(get_anim_ID("HeavyLw"))
                 else:
                     self.set_new_anim_by_ID(get_anim_ID("Heavy"))
@@ -703,13 +703,13 @@ class player:
         else:
             self.specialBuffer = 0
             if self.isJump:
-                if keyboard.is_pressed(self.controls[1]) or keyboard.is_pressed(self.controls[0]): #Lets you specifically side special in the air!
+                if self.buttoncheck[1] or self.buttoncheck[0]: #Lets you specifically side special in the air!
                     self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
                 return
 
-            if keyboard.is_pressed(self.controls[3]) and not keyboard.is_pressed(self.controls[2]):
+            if self.buttoncheck[3] and not self.buttoncheck[2]:
                 self.set_new_anim_by_ID(get_anim_ID("SpecialLw"))
-            elif keyboard.is_pressed(self.controls[1]) or keyboard.is_pressed(self.controls[0]):
+            elif self.buttoncheck[1] or self.buttoncheck[0]:
                 self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
             else:
                 self.set_new_anim_by_ID(get_anim_ID("SpecialN"))
@@ -891,12 +891,12 @@ class player:
             return
         
         if not self.is_left:
-            if keyboard.is_pressed(self.controls[0]) and not keyboard.is_pressed(self.controls[1]):
+            if self.buttoncheck[0] and not self.buttoncheck[1]:
                 self.isBlocking = True
             else:
                 self.isBlocking = False
         else:
-            if keyboard.is_pressed(self.controls[1]) and not keyboard.is_pressed(self.controls[0]):
+            if self.buttoncheck[1] and not self.buttoncheck[0]:
                 self.isBlocking = True
             else:
                 self.isBlocking = False
@@ -926,6 +926,17 @@ class player:
                                 keyboard.is_pressed(self.controls[4]), keyboard.is_pressed(self.controls[5]),
                                 keyboard.is_pressed(self.controls[6])
             ]
+            
+            #Tests logging feature that will be needed eventually
+            if self.playerNum == 1:
+                try:
+                    f = open("log.txt","a")
+                    f.write(str(self.buttoncheck))
+                    f.write("\n")
+                    f.close()
+                except Exception as exc:
+                    print(exc)
+                    sys.exit()
 
             #Move specific code
             self.attackLw()
