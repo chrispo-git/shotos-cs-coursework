@@ -8,6 +8,7 @@ import image_reverser
 import menu
 from tkinter import PhotoImage
 from turtle import Shape
+import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
@@ -44,7 +45,7 @@ def update(turtle, controls,char_pos_x,char_pos_y) -> int:
     return -1
 
 
-def run(training_settings=[False,False,False,0,0]):
+def run(training_settings=[False,False,False,0,0], cpu=False):
     #Screen setup
     turtle.TurtleScreen._RUNNING=True
     screen = turtle.Screen()
@@ -109,13 +110,18 @@ def run(training_settings=[False,False,False,0,0]):
     p1_cursor = turtle.Turtle()
     p1_cursor.penup()
     p1_cursor.goto(-100,-50)
-    p1_cursor.shape("menu/P1_Cursor.gif")
+    p1_cursor.shape("menu/P2_Cursor.gif")
     p2_cursor = turtle.Turtle()
     p2_cursor.penup()
     p2_cursor.goto(100,-50)
-    p2_cursor.shape("menu/P2_Cursor.gif")
+    p2_cursor.shape("menu/P1_Cursor.gif")
 
     controls = run_game.get_controls_from_txt()
+
+    if cpu:
+        rand_val = random.randint(0,CHARACTER_AMOUNT)
+        chosen_chars[1] = rand_val
+        p2_cursor.goto(char_pos_x[rand_val],char_pos_y[rand_val]-20)
     screen.update()
     prev_delay = 0
     while True:
@@ -127,7 +133,6 @@ def run(training_settings=[False,False,False,0,0]):
                 start = time.time()
                 p1 = update(p1_cursor, controls[0], char_pos_x, char_pos_y)
                 p2 = update(p2_cursor, controls[1], char_pos_x, char_pos_y)
-                screen.update()
 
                 if p1 != -1:
                     chosen_chars[0] = p1
@@ -159,6 +164,7 @@ def run(training_settings=[False,False,False,0,0]):
                             break
                     if cancel:
                         break
+                screen.update()
                 if keyboard.is_pressed("escape"):
                     menu.run()
                 end = time.time()
@@ -170,4 +176,4 @@ def run(training_settings=[False,False,False,0,0]):
             #except Exception as exc:
                 #print(exc)
                 #sys.exit()
-    run_game.run(training_settings, chosen_chars)
+    run_game.run(training_settings, chosen_chars, cpu)

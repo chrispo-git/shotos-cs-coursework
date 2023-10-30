@@ -71,7 +71,7 @@ RYU = [
         ["sprites/F00_Air_2.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F00_Air_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
-    [ #Attack
+    [ #AttackN
         ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 3, 6, 0, 1], [5, 22, -12, 1]],
         ["sprites/F00_Attack_2.gif", [-11.5,11.5,-25,14], [8, 18, -11, 1], [0, 1, 3, 6, 0, 1], [5, 22, -12, 1]],
         ["sprites/F00_Attack_1.gif", [-11.5,11.5,-25,14], None, None, [5, 22, -12, 1]],
@@ -289,8 +289,8 @@ KEN = [
         ["sprites/F01_Backward_1.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F01_Backward_2.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F01_Backward_3.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F01_Backward_4.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F01_Backward_5.gif", [-11.5,11.5,-25,14], None, None, None]
+        ["sprites/F01_Backward_4.gif", [-11.5,11.5,-25,14], None, None, None]#,
+        #["sprites/F01_Backward_5.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Crouch
         ["sprites/F01_Crouch_0.gif", [-11.5,11.5,-25,2], None, None, None],
@@ -335,7 +335,7 @@ KEN = [
         ["sprites/F01_Air_2.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F01_Air_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
-    [ #Attack
+    [ #AttackN
         ["sprites/F01_Attack_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F01_Attack_1.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F01_Attack_2.gif", [-11.5,11.5,-25,14], [8, 28, -18, -1], [0, 1, 4, 30, 0, 1], [8, 29, -18, 2]],
@@ -558,16 +558,16 @@ SEAN = [
         ["sprites/F02_JumpSquat_0.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #ForwardDash
-        ["sprites/F00_ForwardDash_0.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_ForwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_ForwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_ForwardDash_3.gif", [-11.5,11.5,-25,14], None, None, None]
+        ["sprites/F02_ForwardDash_0.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_ForwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_ForwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_ForwardDash_3.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #BackDash
-        ["sprites/F00_BackwardDash_0.gif", None, None, None, None],
-        ["sprites/F00_BackwardDash_0.gif", None, None, None, None],
-        ["sprites/F00_BackwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
-        ["sprites/F00_BackwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None]
+        ["sprites/F02_BackwardDash_0.gif", None, None, None, None],
+        ["sprites/F02_BackwardDash_0.gif", None, None, None, None],
+        ["sprites/F02_BackwardDash_1.gif", [-11.5,11.5,-25,14], None, None, None],
+        ["sprites/F02_BackwardDash_2.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
     [ #Air
         ["sprites/F02_Air_0.gif", [-11.5,11.5,-25,14], None, None, None],
@@ -577,7 +577,7 @@ SEAN = [
         ["sprites/F02_Air_2.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F02_Air_1.gif", [-11.5,11.5,-25,14], None, None, None]
     ],
-    [ #Attack
+    [ #AttackN
         ["sprites/F02_Attack_0.gif", [-11.5,11.5,-25,14], None, None, None],
         ["sprites/F02_Attack_1.gif", [-11.5,11.5,-25,14], [7, 23, -2, 3], [0, 1, 3, 6, 0, 1], [7, 25, -4, 5]],
         ["sprites/F02_Attack_1.gif", [-11.5,11.5,-25,14], [7, 23, -2, 3], [0, 1, 3, 6, 0, 1], [7, 25, -4, 5]],

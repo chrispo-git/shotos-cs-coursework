@@ -9,8 +9,10 @@ import random
 import math
 import sys
 import menu
+import cpu_data
 import animations
 import stats
+from util import get_anim_ID
 
 image_reverser.reverse()
 
@@ -74,48 +76,17 @@ hitbox_properties = [
     [0,0,0,0,0,0]
 ]
 
+players_x = [0,0]
+players_y = [0,0]
+
 
 
 #Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2]
 # , [hitbox x1, hitbox x2, hitbox y1, hitbox y2]
 # , [hit_height, damage, hitstun, kb_speed_x, kb_speed_y, blockstun] - hit height is (-1 Low, 1 High, 0 Mid, 2 unblockable)
 # , [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2] Second set of hurtboxess, used for hurtbox extensions on moves
-def get_anim_ID(name: str) -> int:
-        global ANIMATION_LIST_LABEL
-        try:
-            value = ANIMATION_LIST_LABEL.index(name)
-            return value
-        except ValueError:
-            return -1
 
-ANIMATION_LIST_LABEL = [
-    "Idle",
-    "WalkF",
-    "WalkB",
-    "Crouch",
-    "CrouchWait",
-    "CrouchRv",
-    "JumpSquat",
-    "ForwardDash",
-    "BackDash",
-    "Air",
-    "Attack",
-    "AttackLw",
-    "AttackAir",
-    "Heavy",
-    "HeavyLw",
-    "HeavyAir",
-    "Hitstun",
-    "Guard",
-    "CrouchGuard",
-    "GuardAir",
-    "SpecialLw",
-    "SpecialN",
-    "SpecialNEmpty",
-    "SpecialS",
-    "ThrowWhiff",
-    "ThrowF"
-]
+
 
 ACTIONABLE_LIST = [
     get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB"), 
@@ -181,7 +152,9 @@ class player:
         controls: list, #Controls expressed as [left, right, up, down, light, heavy, special]
         Left: bool,
         Training_settings: list,
-        character: int
+        character: int,
+        read_log = False,
+        is_cpu = False
     ):
         self.playerNum = playerNum
         self.x = x
@@ -247,7 +220,33 @@ class player:
         self.turtle.shape(self.sprite)
         self.animate()
 
+        self.isCpu = is_cpu
+        self.cpuQueue = []
+
         self.controls = controls
+        self.readLog = read_log
+        self.logFrame = 0
+        self.log = []
+        if self.readLog:
+            try:
+                f = open("test_log.txt")
+                text = f.readlines()
+                f.close()
+                for i in text:
+                    line = i.replace(" ", "")
+                    line = line.replace("\n", "")
+                    line = line.replace("[", "")
+                    line = line.replace("]", "")
+                    line = line.split(",")
+                    line = [ele.lower().capitalize() == "True" for ele in line] #Converts strings into real booleans
+                    self.log.append(line)
+            except Exception:
+                print("failed to read log")
+                self.log = []
+                self.readLog = False
+        
+        self.logLength = len(self.log)
+
     
     def update_other_list(self, new):
         self.accessOtherPlayer = new
@@ -366,6 +365,12 @@ class player:
             if high_low == -1:
                 self.isCrouch = True
             return True
+        if self.isCpu:
+            if random.randint(0, 100) < cpu_data.BLOCK_CHANCE and (self.animListID in ACTIONABLE_LIST or self.animListID in BLOCKING_LIST):
+                self.isBlocking = True
+                if high_low == -1:
+                    self.isCrouch = True
+                return True
 
         if self.isBlocking:
             if high_low == 0:
@@ -900,12 +905,102 @@ class player:
                 self.isBlocking = True
             else:
                 self.isBlocking = False
-
+    
+    def runCpuQueue(self):
+        if self.isHitstun:
+            self.cpuQueue = []
+            return
+        
+        if len(self.cpuQueue) < 1:
+            if self.animListID in ACTIONABLE_LIST and not self.isLeaveBlockstun:
+                cpu_data.check_movement(self, players_x[self.playerNum - 1], players_x[-self.playerNum], players_y[self.playerNum - 1], players_y[-self.playerNum])
+                if self.cpuQueue[0] in [get_anim_ID("ForwardDash"), get_anim_ID("Backdash")]:
+                    self.cpuQueue.insert(0, cpu_data.WAIT)
+                    self.cpuQueue.insert(0, cpu_data.WAIT)
+                    self.cpuQueue.insert(0, cpu_data.WAIT)
+            else:
+                if self.animListID in [get_anim_ID("WalkF"), get_anim_ID("WalkB")]:
+                    self.set_new_anim_by_ID()
+                return
+            
+        if self.animListID == get_anim_ID("WalkF"):
+                if self.is_left:
+                    self.moveXThisFrame = -stats.WALK_SPEED[self.char_id]
+                else:
+                    self.moveXThisFrame = stats.WALK_SPEED[self.char_id]
+        if self.animListID == get_anim_ID("WalkB"):
+                if self.is_left:
+                    self.moveXThisFrame = stats.WALK_SPEED[self.char_id]
+                else:
+                    self.moveXThisFrame = -stats.WALK_SPEED[self.char_id]
+                    
+        next_command = self.cpuQueue[0]
+        if next_command == self.animListID:
+            self.cpuQueue.pop(0)
+            return
+        
+        if self.animListID in SPECIAL_CANCEL_LIST and self.doPushback:
+                other = self.accessOtherPlayer[self.playerNum - 1]
+                if not other.isBlockstun:
+                    if random.randint(0, 100) < 30:
+                        if not self.isJump:
+                            self.set_new_anim_by_ID(cpu_data.SPECIAL_CANCEL[self.char_id])
+                        else:
+                            self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
+                else:
+                    rand_val = random.randint(0, 100)
+                    if rand_val < 5:
+                        if not self.isJump:
+                            self.set_new_anim_by_ID(cpu_data.SPECIAL_CANCEL_SAFE[self.char_id])
+                        else:
+                            self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
+                    elif rand_val < 8:
+                        if not self.isJump:
+                            self.set_new_anim_by_ID(cpu_data.SPECIAL_CANCEL[self.char_id])
+                        else:
+                            self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
+                    
+        if self.animListID in ACTIONABLE_LIST and ((not self.isJump and next_command in cpu_data.GROUND_MOVE) or (self.isJump and next_command in cpu_data.AIR_MOVE)):
+            if next_command == get_anim_ID("ForwardDash"):
+                self.set_new_anim_by_ID(next_command)
+                self.cpuQueue.pop(0)
+                if self.is_left:
+                    self.moveXThisFrame = -stats.FDASH_SPEED[self.char_id]
+                else:
+                    self.moveXThisFrame = stats.FDASH_SPEED[self.char_id]
+            elif next_command == get_anim_ID("BackDash"):
+                self.set_new_anim_by_ID(next_command)
+                self.cpuQueue.pop(0)
+                if self.is_left:
+                    self.moveXThisFrame = stats.BDASH_SPEED[self.char_id]
+                else:
+                    self.moveXThisFrame = -stats.BDASH_SPEED[self.char_id]
+            elif next_command == get_anim_ID("WalkF"):
+                self.set_new_anim_by_ID(next_command)
+                self.cpuQueue.pop(0)
+                if self.is_left:
+                    self.moveXThisFrame = -stats.WALK_SPEED[self.char_id]
+                else:
+                    self.moveXThisFrame = stats.WALK_SPEED[self.char_id]
+            elif next_command == get_anim_ID("WalkB"):
+                self.set_new_anim_by_ID(next_command)
+                self.cpuQueue.pop(0)
+                if self.is_left:
+                    self.moveXThisFrame = stats.WALK_SPEED[self.char_id]
+                else:
+                    self.moveXThisFrame = -stats.WALK_SPEED[self.char_id]
+            else:
+                self.set_new_anim_by_ID(next_command)
+                self.cpuQueue.pop(0)
+            return
     
     def update(self):
             global PUSHBOXES
             global PUSHING_FORCE
             global force_hit_now
+
+            players_x[self.playerNum - 1] = self.x
+            players_y[self.playerNum - 1] = self.y
 
             if force_hit_now and not self.hasHit and not hitbox_properties[-(self.playerNum)] == None:
                 force_hit_now = False
@@ -921,12 +1016,25 @@ class player:
             self.hitstun_movement()
             self.air()
             self.dash()
-            self.buttoncheck = [keyboard.is_pressed(self.controls[0]),keyboard.is_pressed(self.controls[1]),
-                                keyboard.is_pressed(self.controls[2]), keyboard.is_pressed(self.controls[3]),
-                                keyboard.is_pressed(self.controls[4]), keyboard.is_pressed(self.controls[5]),
-                                keyboard.is_pressed(self.controls[6])
-            ]
+
+
+            if self.readLog:
+                self.buttoncheck = self.log[self.logFrame]
+                self.logFrame += 1
+                if self.logFrame >= self.logLength:
+                    self.logFrame = 0
+            elif self.isCpu:
+                self.buttoncheck = [False,False,False,False,False,False,False]
+            else:
+                self.buttoncheck = [keyboard.is_pressed(self.controls[0]),keyboard.is_pressed(self.controls[1]),
+                                    keyboard.is_pressed(self.controls[2]), keyboard.is_pressed(self.controls[3]),
+                                    keyboard.is_pressed(self.controls[4]), keyboard.is_pressed(self.controls[5]),
+                                    keyboard.is_pressed(self.controls[6])
+                ]
             
+            if self.isCpu:
+                self.runCpuQueue()
+
             #Tests logging feature that will be needed eventually
             if self.playerNum == 1:
                 try:
@@ -947,22 +1055,23 @@ class player:
             self.throw_logic()
 
             self.animate()
-
-            if self.buttoncheck[0] and not self.buttoncheck[1]:
-                self.left()
-            elif (self.animListID == get_anim_ID("WalkF") and self.is_left != False) or (self.animListID == get_anim_ID("WalkB") and self.is_left != True):
-                if  not self.isHitstun:
-                    self.set_new_anim_by_ID() #Resets you to standing when left no longer pressed
             
-            if self.buttoncheck[0] and not self.buttoncheck[1]:
-                self.leftPressed = True
-            else:
-                self.leftPressed = False
+            if not self.isCpu:
+                if self.buttoncheck[0] and not self.buttoncheck[1]:
+                    self.left()
+                elif self.animListID == get_anim_ID("WalkF") and (self.is_left != False) or (self.animListID == get_anim_ID("WalkB") and (self.is_left != True )):
+                    if  not self.isHitstun:
+                        self.set_new_anim_by_ID() #Resets you to standing when left no longer pressed
+            
+                if self.buttoncheck[0] and not self.buttoncheck[1]:
+                    self.leftPressed = True
+                else:
+                    self.leftPressed = False
 
-            if self.buttoncheck[1] and not self.buttoncheck[0]:
-                self.right()
-            elif (self.animListID == get_anim_ID("WalkF") and self.is_left != True) or (self.animListID == get_anim_ID("WalkB") and self.is_left != False):
-                self.set_new_anim_by_ID() #Resets you to standing when right no longer pressed
+                if self.buttoncheck[1] and not self.buttoncheck[0]:
+                    self.right()
+                elif (self.animListID == get_anim_ID("WalkF") and (self.is_left != True)) or (self.animListID == get_anim_ID("WalkB") and (self.is_left != False )):
+                    self.set_new_anim_by_ID() #Resets you to standing when right no longer pressed
                 
                 
             if self.buttoncheck[1] and not self.buttoncheck[0]:
@@ -1058,6 +1167,27 @@ class player:
                             self.moveXThisFrame = stats.BDASH_SPEED[self.char_id]
                         else:
                             self.moveXThisFrame = -stats.BDASH_SPEED[self.char_id]
+            if self.isCpu:
+                if self.isBlockstun:
+                    self.isLeaveBlockstun = True
+                elif self.isLeaveBlockstun and self.animListID in ACTIONABLE_LIST and not self.isJump:
+                    rng = random.randint(0, 100)
+                    if rng < 35:
+                        self.set_new_anim_by_ID(cpu_data.JAB[self.char_id])
+                    elif rng < 45:
+                        self.set_new_anim_by_ID(cpu_data.DP[self.char_id])
+                    elif rng < 55:
+                        self.set_new_anim_by_ID(cpu_data.DP2[self.char_id])
+                    elif rng < 60:
+                        self.set_new_anim_by_ID(cpu_data.GRAB)
+                    elif rng < 62:
+                        self.set_new_anim_by_ID(get_anim_ID("BackDash"))
+                        if self.is_left:
+                            self.moveXThisFrame = stats.BDASH_SPEED[self.char_id]
+                        else:
+                            self.moveXThisFrame = -stats.BDASH_SPEED[self.char_id]
+                    
+                    self.isLeaveBlockstun = False
 
             if self.hitstunFrames <= 0:
                 self.isHitstun = False
@@ -1336,7 +1466,7 @@ class save_icon:
         run(new_training_settings, self.characters)
 
 
-def run(training_settings=[False,False,False,0,0], character=[0,0]):
+def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
     global chars
     chars = character
     controlsList = get_controls_from_txt()
@@ -1348,6 +1478,9 @@ def run(training_settings=[False,False,False,0,0], character=[0,0]):
     screen.clearscreen()
     #[Is in training mode, Enable hitboxes]
     #screen.delay(17)
+    f = open("log.txt","w")
+    f.write("")
+    f.close()
     for i in ["sprites", "reverse_sprites"]:
         for root, dirs, files in os.walk(i):
             #print(files)
@@ -1403,6 +1536,8 @@ def run(training_settings=[False,False,False,0,0], character=[0,0]):
         training_settings,
         character[1]
     )
+    if cpu:
+        p2.isCpu = True
 
     accessOtherPlayer = [p2, p1]
     p1.update_other_list(accessOtherPlayer)

@@ -10,8 +10,8 @@ SCREEN_HEIGHT = 450
 
 MAX_Y = -18
 MIN_Y = -104
-OFFLINE = [-330,-180]
-ONLINE = [-170,-20]
+P2 = [-330,-180]
+CPU = [-170,-20]
 TRAINING = [0,150]
 SETTINGS = [160,310]
 VALID_KEYS = [
@@ -31,18 +31,21 @@ def check_click_pos(x,y):
     if not is_controls:
         if y < MIN_Y or y > MAX_Y:
             return 
-        if x >= OFFLINE[0] and x <= OFFLINE[1]:
+        if x >= P2[0] and x <= P2[1]:
             try:
                 css.run([False,False,False,0,0])
             except Exception:
                 sys.exit()
-        elif x >= ONLINE[0] and x <= ONLINE[1]:
-            dummy = 0
-        elif x >= TRAINING[0] and x <= TRAINING[1]:
+        elif x >= CPU[0] and x <= CPU[1]:
             try:
-                css.run([True,True,False,0,0])
+                css.run([False,False,False,0,0],True)
             except Exception:
                 sys.exit()
+        elif x >= TRAINING[0] and x <= TRAINING[1]:
+            #try:
+                css.run([True,True,False,0,0])
+            #except Exception:
+                #sys.exit()
         elif x >= SETTINGS[0] and x <= SETTINGS[1]:
             is_controls = True
             run_settings_screen()
