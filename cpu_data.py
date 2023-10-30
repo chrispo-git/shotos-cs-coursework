@@ -44,10 +44,10 @@ AIR_MOVE = [get_anim_ID("AttackAir"), get_anim_ID("HeavyAir"), get_anim_ID("Spec
 #Parameters
 BLOCK_CHANCE = 65
 
-def add_to_queue(object, anim):
+def add_to_queue(object, anim): #Adds an action to the queue
     object.cpuQueue.append(anim)
 
-def rng_queue(object, choices):
+def rng_queue(object, choices): #Adds a random action to the queue based on a list of choices
     object.cpuQueue.append(random.choice(choices))
 
 def check_movement(object,yourX,theirX, yourY, theirY):
@@ -56,11 +56,11 @@ def check_movement(object,yourX,theirX, yourY, theirY):
         return
     distance = int(abs(yourX-theirX)/10) + 10
     distanceY = int(abs(yourY-theirY)/10)
-    if distance < JAB_RANGE:
+    if distance < JAB_RANGE: #Up Close
         if random.randint(0, 100) < 80:
-            if distanceY < 3:
+            if distanceY < 3: #If theyre on the same level or ever so slightly above
                 rng_queue(object, [DASH_B, JAB[object.char_id], JAB[object.char_id], GRAB])
-            elif distanceY < 25:
+            elif distanceY < 25: #If theyre above but not too high to antiair
                 rng_queue(object, [DASH_B, ANTIAIR[object.char_id], ANTIAIR[object.char_id], DP[object.char_id]])
             else:
                 add_to_queue(object, WAIT)
@@ -71,7 +71,7 @@ def check_movement(object,yourX,theirX, yourY, theirY):
             else:
                 for _ in range(0,random.randint(1, 10)):
                     add_to_queue(object, WALK_F)
-    elif distance < POKE_RANGE:
+    elif distance < POKE_RANGE: #Midrange spacing, prime footsies area
         if random.randint(0, 100) < 68:
             if distance > THEIR_POKE_RANGE[object.char_id]:
                 rng_queue(object, [DASH_B,DASH_B, DASH_F, POKE[object.char_id],DASH_B,DASH_B, DASH_F, POKE2[object.char_id],DASH_B,DASH_B, DASH_F, POKE[object.char_id],BIG[object.char_id]])
@@ -85,7 +85,7 @@ def check_movement(object,yourX,theirX, yourY, theirY):
             else:
                 for _ in range(0,random.randint(1, 15)):
                     add_to_queue(object, WALK_F)
-    elif distance < PROJECTILE_RANGE:
+    elif distance < PROJECTILE_RANGE: #Within projectile spacing, far range
         if random.randint(0, 100) < 68:
             rng_queue(object, [DASH_F, DASH_F,DASH_F, DASH_F, POKE[object.char_id], POKE2[object.char_id], PROJECTILE[object.char_id], PROJECTILE[object.char_id], TATSU[object.char_id], BIG[object.char_id]])
         else:
@@ -95,7 +95,7 @@ def check_movement(object,yourX,theirX, yourY, theirY):
             else:
                 for _ in range(0,random.randint(1, 15)):
                     add_to_queue(object, WALK_F)
-    elif distance >= PROJECTILE_RANGE:
+    elif distance >= PROJECTILE_RANGE: #Very far range, no normals are really hitting over here
         if random.randint(0, 100) < 68:
             if distance > THEIR_PROJECTILE_RANGE[object.char_id]:
                 rng_queue(object, [DASH_F, DASH_F,DASH_F, DASH_F, DASH_F, DASH_F,DASH_F, DASH_F, DASH_F,DASH_F, DASH_F,

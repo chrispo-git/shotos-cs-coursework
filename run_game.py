@@ -13,6 +13,7 @@ import cpu_data
 import animations
 import stats
 from util import get_anim_ID
+from util import get_controls_from_txt
 
 image_reverser.reverse()
 
@@ -87,7 +88,7 @@ players_y = [0,0]
 # , [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2] Second set of hurtboxess, used for hurtbox extensions on moves
 
 
-
+#Lists of anims in a certain category
 ACTIONABLE_LIST = [
     get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB"), 
     get_anim_ID("Crouch"), get_anim_ID("CrouchWait"), get_anim_ID("CrouchRv"),
@@ -130,7 +131,7 @@ def rectangle(turtle, points):
         turtle.goto(i[0], i[1])
     turtle.penup()
 
-def draw_boxes(screen, p1hurt, p1hurt2, p1hit, p2hurt, p2hurt2, p2hit):
+def draw_boxes(screen, p1hurt, p1hurt2, p1hit, p2hurt, p2hurt2, p2hit): #Used for hurtbox/hitbox display in training mode
     screen.tracer(0)
     rectangle(p1hurt, hurtbox[0])
     rectangle(p2hurt, hurtbox[1])
@@ -227,7 +228,7 @@ class player:
         self.readLog = read_log
         self.logFrame = 0
         self.log = []
-        if self.readLog:
+        if self.readLog: #Debug logging stuff, to check if you can take full control of the player using code rather than buttons
             try:
                 f = open("test_log.txt")
                 text = f.readlines()
@@ -248,10 +249,10 @@ class player:
         self.logLength = len(self.log)
 
     
-    def update_other_list(self, new):
+    def update_other_list(self, new): #Used to access opponent's attributes and methods
         self.accessOtherPlayer = new
 
-    def update_hit_hurt(self):
+    def update_hit_hurt(self): #Updates hitbox and hurtbox placement
         global JUMP_INITAL
         anim = self.animList[self.animListID]
         direction_mul = 1.0
@@ -316,7 +317,7 @@ class player:
         anim_length = len(anim)
         sprite = anim[self.frame][0]
         if self.is_left == True:
-            sprite = sprite.replace("sprites", "reverse_sprites")
+            sprite = sprite.replace("sprites", "reverse_sprites") #If facing left, replace them with their reversed variant
         self.sprite = sprite
         #print(self.sprite)
         self.turtle.shape(self.sprite)
@@ -331,7 +332,7 @@ class player:
         else:
             self.frame += 1
 
-    def overlap(self, rect1, rect2):
+    def overlap(self, rect1, rect2): #Checks if 2 rectangles in space overlap! If they do reports as true. Used to check if hitboxes overlap hurtboxes
         r1x1 = rect1[0]
         r1x2 = rect1[1]
         r1y1 = rect1[2]
@@ -348,31 +349,31 @@ class player:
         #print("Overlaps!")
         return True
     
-    def did_i_block_that(self):
+    def did_i_block_that(self): #The blocking checker
         enemy_properties = hitbox_properties[-(self.playerNum)]
         high_low = enemy_properties[0]
-        if high_low == 2:
+        if high_low == 2: #Unblockable! Used for throws
             return False
         
-        if self.isHitstun and not self.isBlockstun:
+        if self.isHitstun and not self.isBlockstun: #You can't block while you're in hitstun!
             return False
         
         if (self.training_settings[3] == 1 or self.start_blocking_now > 0) and (self.animListID in ACTIONABLE_LIST or self.animListID in BLOCKING_LIST) and self.playerNum == 2:
-            if self.training_settings[3] == 2:
+            if self.training_settings[3] == 2: #Training mode block all or block after first hit type behaviour
                 self.start_blocking_now = BLOCK_TIME
 
             self.isBlocking = True
             if high_low == -1:
                 self.isCrouch = True
             return True
-        if self.isCpu:
+        if self.isCpu: #CPU behaviour
             if random.randint(0, 100) < cpu_data.BLOCK_CHANCE and (self.animListID in ACTIONABLE_LIST or self.animListID in BLOCKING_LIST):
                 self.isBlocking = True
                 if high_low == -1:
                     self.isCrouch = True
                 return True
 
-        if self.isBlocking:
+        if self.isBlocking: #Regular behaviour
             if high_low == 0:
                 return True 
             if high_low == -1 and self.isCrouch:
@@ -443,8 +444,8 @@ class player:
             
     
     def hitstun_movement(self):
-        if self.isHitstun:
-            self.moveXThisFrame = self.lastmoveX * KB_DECAY_MULTIPLIER
+        if self.isHitstun: #Governs where they be going during hitstun
+            self.moveXThisFrame = self.lastmoveX * KB_DECAY_MULTIPLIER #Knockback decays at a set rate so that it naturally stops
             self.moveYThisFrame = self.lastmoveY * KB_DECAY_MULTIPLIER
             self.lastmoveY = self.moveYThisFrame
             self.lastmoveX = self.moveXThisFrame
@@ -597,7 +598,7 @@ class player:
         if self.isJump == False:
             if self.animListID in [get_anim_ID("Idle"), get_anim_ID("WalkF"), get_anim_ID("WalkB"), get_anim_ID("CrouchRv")]:
                 self.isJump = True
-                self.set_new_anim_by_ID(get_anim_ID("JumpSquat"))
+                self.set_new_anim_by_ID(get_anim_ID("JumpSquat")) #Jump time
             else:
                 self.jumpBuffer = BUFFER_FRAMES
             
@@ -618,25 +619,26 @@ class player:
             else:
                 if self.animListID == get_anim_ID("JumpSquat"):
                     if self.buttoncheck[0] and not self.buttoncheck[1]:
-                        self.jumpDir = 1.0
+                        self.jumpDir = 1.0 #Jump right
                     elif self.buttoncheck[1] and not self.buttoncheck[0]:
-                        self.jumpDir = -1.0
+                        self.jumpDir = -1.0 #Jump left
                     else:
-                        self.jumpDir = 0.0
+                        self.jumpDir = 0.0 #Jump straight
                     
+                    #makes buffering rising aerials a breeze!
                     if self.buttoncheck[4] and not self.buttoncheck[5]:
                         self.attackBuffer = 1
                     if self.buttoncheck[5] and not self.buttoncheck[4]:
                         self.heavyBuffer = 1
                 else:
                     #print("we running")
-                    self.moveYThisFrame = self.lastmoveY - GRAVITY
+                    self.moveYThisFrame = self.lastmoveY - GRAVITY #Makes them fall
                     if not self.isHitstun:
                         self.moveXThisFrame = self.jumpDir * AIR_MOVE * -1.0
                     
     def attack(self):
         global ACTIONABLE_LIST
-        if not self.animListID in ACTIONABLE_LIST:
+        if not self.animListID in ACTIONABLE_LIST: #Attack buffer
             self.attackBuffer = BUFFER_FRAMES
         else:
             self.attackBuffer = 0
@@ -657,7 +659,7 @@ class player:
         if not self.animListID == get_anim_ID("AttackLw"):
             return
         
-        if self.char_id == 2:
+        if self.char_id == 2: #So sean can slide
             direction_mul = 1.0
             if self.is_left:
                 direction_mul = -1.0
@@ -670,7 +672,7 @@ class player:
         if not self.animListID == get_anim_ID("Heavy"):
             return
         
-        if self.char_id == 0:
+        if self.char_id == 0: #So ryu can kick
             direction_mul = 1.0
             if self.is_left:
                 direction_mul = -1.0
@@ -733,9 +735,8 @@ class player:
             return
         
         if self.doPushback and not self.hasHit and self.animListID == get_anim_ID("ThrowWhiff"):
-            self.set_new_anim_by_ID(get_anim_ID("ThrowF"))
+            self.set_new_anim_by_ID(get_anim_ID("ThrowF")) # Goes into throw animation if the Grabbox hits
         
-        #if self.animListID == get_anim_ID("ThrowF"):
     
     def specialLw(self):
         if self.animListID != get_anim_ID("SpecialLw"):
@@ -745,7 +746,7 @@ class player:
         if self.is_left:
             direction_mul = -1.0
         
-        if self.char_id == 0:
+        if self.char_id == 0: #all these are character specific behaviours
             if self.frame == 3:
                 self.isJump = True
                 self.jumpDir = 0
@@ -783,7 +784,7 @@ class player:
         if self.is_left:
             direction_mul = -1.0
         
-        if self.char_id == 0:
+        if self.char_id == 0: #all these are character specific behaviours
             if self.isJump:
                 self.moveXThisFrame = SPECIAL_S_X*direction_mul*1.2
             else:
@@ -911,7 +912,7 @@ class player:
             self.cpuQueue = []
             return
         
-        if len(self.cpuQueue) < 1:
+        if len(self.cpuQueue) < 1: #If queue is empty, try and fill it up again
             if self.animListID in ACTIONABLE_LIST and not self.isLeaveBlockstun:
                 cpu_data.check_movement(self, players_x[self.playerNum - 1], players_x[-self.playerNum], players_y[self.playerNum - 1], players_y[-self.playerNum])
                 if self.cpuQueue[0] in [get_anim_ID("ForwardDash"), get_anim_ID("Backdash")]:
@@ -923,7 +924,7 @@ class player:
                     self.set_new_anim_by_ID()
                 return
             
-        if self.animListID == get_anim_ID("WalkF"):
+        if self.animListID == get_anim_ID("WalkF"): #Ensures they walk properly!
                 if self.is_left:
                     self.moveXThisFrame = -stats.WALK_SPEED[self.char_id]
                 else:
@@ -935,7 +936,7 @@ class player:
                     self.moveXThisFrame = -stats.WALK_SPEED[self.char_id]
                     
         next_command = self.cpuQueue[0]
-        if next_command == self.animListID:
+        if next_command == self.animListID: #If the command is repeated just keep on doing what you been doing
             self.cpuQueue.pop(0)
             return
         
@@ -994,7 +995,7 @@ class player:
                 self.cpuQueue.pop(0)
             return
     
-    def update(self):
+    def update(self): #Once per player frame
             global PUSHBOXES
             global PUSHING_FORCE
             global force_hit_now
@@ -1035,7 +1036,7 @@ class player:
             if self.isCpu:
                 self.runCpuQueue()
 
-            #Tests logging feature that will be needed eventually
+            #Logs player 1 stuff
             if self.playerNum == 1:
                 try:
                     f = open("log.txt","a")
@@ -1297,12 +1298,12 @@ class battleUI:
         self.hp_start_y = 175
         self.hp_bar_thickness = 2*SCALE
     
-    def clear(self):
+    def clear(self): #Clears the screen
         self.p1HP.clear()
         self.p2HP.clear()
         self.youWin.clear()
 
-    def update_healthbar(self):
+    def update_healthbar(self): #Updates health bar based on their health remaining
         p1_hp_length = (self.p1.hp/stats.HEALTH[self.p1.char_id]) * self.hp_bar_length
         p2_hp_length = (self.p2.hp/stats.HEALTH[self.p2.char_id]) * self.hp_bar_length
         self.screen.tracer(0)
@@ -1345,13 +1346,13 @@ class battleUI:
             player = 1
             if self.p2.hp > self.p1.hp:
                 player = 2
-            self.youWin.shape(f"sprites/p{player}_win.gif")
+            self.youWin.shape(f"sprites/p{player}_win.gif") #Hooray
             self.youWin.stamp()
 
 chars = []
 cpus = False
 
-def rematch(x,y):
+def rematch(x,y): #Another on click method for turtle screen awesome
     global chars
     if abs(x) > 25:
         return
@@ -1359,19 +1360,6 @@ def rematch(x,y):
         menu.run(True,chars,cpus)
     if y > -60 and y < -33:
         menu.run()
-
-def get_controls_from_txt() -> list:
-    f = open("controls.txt")
-    controls = f.readlines()
-    for x in range(0, len(controls)):
-        i = controls[x]
-        i = i.replace("\n", "")
-        i = i.split(" ")
-        while len(i) < 7:
-            i.append("_")
-        controls[x] = i
-    
-    return controls
 
 def pause_update(pause_turtle, controls, training_settings:list):
     global chars
@@ -1479,7 +1467,7 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
     screen.title("Shotos")
     screen.bgcolor("white")
     screen.clearscreen()
-    #[Is in training mode, Enable hitboxes]
+    #[Is in training mode, Enable hitboxes, Enable Frame by Frame, Blocking Mode, Reversal]
     #screen.delay(17)
     f = open("log.txt","w")
     f.write("")
@@ -1499,7 +1487,7 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
                 screen.addshape(f"menu/{filename}")
 
     screen.tracer(0)
-    if training_settings[1] and training_settings[0]:
+    if training_settings[1] and training_settings[0]: #Hitbox/hurtbox drawing!
         p1_hurtbox_draw = turtle.Turtle()
         p1_hurtbox_draw.color("green")
         p1_hurtbox_draw.hideturtle()
@@ -1520,7 +1508,7 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
         p2_hitbox_draw.hideturtle()
     
 
-
+    #Initialising players
     p1 = player(
         1,
         -150, 0,

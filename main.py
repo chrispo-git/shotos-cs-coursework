@@ -1,5 +1,4 @@
-
-#Using import runs all the code in that py file
+#Basically just a launcher
 import menu
 
 menu.run()

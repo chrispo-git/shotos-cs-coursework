@@ -9,6 +9,7 @@ import menu
 from tkinter import PhotoImage
 from turtle import Shape
 import random
+from util import get_controls_from_txt
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
@@ -116,9 +117,9 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
     p2_cursor.goto(100,-50)
     p2_cursor.shape("menu/P1_Cursor.gif")
 
-    controls = run_game.get_controls_from_txt()
+    controls = get_controls_from_txt()
 
-    if cpu:
+    if cpu: #If its a CPU randomly choose their character already! 
         rand_val = random.randint(0,CHARACTER_AMOUNT-1)
         print(rand_val)
         chosen_chars[1] = rand_val

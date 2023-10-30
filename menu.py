@@ -5,6 +5,7 @@ import run_game
 import turtle
 import keyboard
 import css
+from util import get_controls_from_txt
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
 
@@ -29,48 +30,36 @@ def check_click_pos(x,y):
     global is_controls
     global screen_instance
     if not is_controls:
-        if y < MIN_Y or y > MAX_Y:
+        if y < MIN_Y or y > MAX_Y: #If outside of the Y area where you'd click buttons just dont run this
             return 
-        if x >= P2[0] and x <= P2[1]:
+        if x >= P2[0] and x <= P2[1]: #Checks if your X value is in the button area, no need to check Y as its already done above
             try:
-                css.run([False,False,False,0,0])
+                css.run([False,False,False,0,0]) #Runs the CSS with arguments that the CSS will pass onto the run_game module
             except Exception:
-                sys.exit()
+                sys.exit() #Closes the game on errors so that it doesnt hang 
         elif x >= CPU[0] and x <= CPU[1]:
             try:
                 css.run([False,False,False,0,0],True)
             except Exception:
                 sys.exit()
         elif x >= TRAINING[0] and x <= TRAINING[1]:
-            #try:
+            try:
                 css.run([True,True,False,0,0])
-            #except Exception:
-                #sys.exit()
+            except Exception:
+                sys.exit()
         elif x >= SETTINGS[0] and x <= SETTINGS[1]:
             is_controls = True
             run_settings_screen()
-    else:
+    else: #If you're in controls, changes your on click behaviour
         if x > 300 or x < -300 or y < -195 or y > 195:
-            run() 
-        if y < 85 or y > 135:
+            run() #Leaves controls
+        if y < 85 or y > 135: #If not at the controls button height ignore
             return 
-        if x < -70 and x > -250:
+        if x < -70 and x > -250: #Player 1 controls
             update_controls(0)
-        if x < 250 and x > 70:
+        if x < 250 and x > 70: #P2 controls
             update_controls(1)
 
-def get_controls_from_txt() -> list:
-    f = open("controls.txt")
-    controls = f.readlines()
-    for x in range(0, len(controls)):
-        i = controls[x]
-        i = i.replace("\n", "")
-        i = i.split(" ")
-        while len(i) < 7:
-            i.append("_")
-        controls[x] = i
-    
-    return controls
 
 def update_controls(player):
     global screen_instance
@@ -80,7 +69,7 @@ def update_controls(player):
     screen_instance.update()
     screen_instance.tracer(10)
     printer.showturtle()
-
+    #Goes through each key and gets your binding for it
     keylist = VALID_KEYS
     printer.shape("menu/presskey_left.gif")
     screen_instance.update()
@@ -135,7 +124,7 @@ def wait_till_button(key_set):
         for i in key_set:
             if keyboard.is_pressed(i):
                 return i
-        screen_instance.update()
+        screen_instance.update() #Screen must continually be updated to prevent turtle freezing!
         time.sleep(0.2)
 
 
