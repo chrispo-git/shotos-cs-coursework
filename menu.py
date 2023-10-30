@@ -188,7 +188,7 @@ def run_settings_screen():
     screen_instance.mainloop()
 
 
-def run(auto=False,chars=[]):
+def run(auto=False,chars=[],cpu=False):
     global is_controls
     global screen_instance
     is_controls = False
@@ -209,7 +209,7 @@ def run(auto=False,chars=[]):
     screen.clearscreen()
     if auto:
         try:
-            run_game.run([False,False,False,0,0], chars)
+            run_game.run([False,False,False,0,0], chars, cpu)
         except Exception:
             sys.exit()
     menuUI = turtle.Turtle()

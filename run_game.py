@@ -1349,13 +1349,14 @@ class battleUI:
             self.youWin.stamp()
 
 chars = []
+cpus = False
 
 def rematch(x,y):
     global chars
     if abs(x) > 25:
         return
     if y > 13 and y < 40:
-        menu.run(True,chars)
+        menu.run(True,chars,cpus)
     if y > -60 and y < -33:
         menu.run()
 
@@ -1468,7 +1469,9 @@ class save_icon:
 
 def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
     global chars
+    global cpus
     chars = character
+    cpus = cpu
     controlsList = get_controls_from_txt()
     turtle.TurtleScreen._RUNNING=True
     screen = turtle.Screen()
