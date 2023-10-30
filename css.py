@@ -119,7 +119,8 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
     controls = run_game.get_controls_from_txt()
 
     if cpu:
-        rand_val = random.randint(0,CHARACTER_AMOUNT)
+        rand_val = random.randint(0,CHARACTER_AMOUNT-1)
+        print(rand_val)
         chosen_chars[1] = rand_val
         p2_cursor.goto(char_pos_x[rand_val],char_pos_y[rand_val]-20)
     screen.update()
