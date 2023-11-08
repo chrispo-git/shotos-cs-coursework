@@ -1589,9 +1589,9 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
                         pause_ui.shape("menu/training_pause_1.gif")
                     else:
                         pause_ui.shape("menu/pause_1.gif")
-                    if not keyboard.is_pressed("escape"):
+                    if not (keyboard.is_pressed("escape") or keyboard.is_pressed("backspace")):
                         pause_release = True
-                    if keyboard.is_pressed("escape") and pause_release:
+                    if (keyboard.is_pressed("escape") or keyboard.is_pressed("backspace")) and pause_release:
                         pause_release = False
                         paused = True
                     ui.update()
@@ -1614,9 +1614,9 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
                         p2_hurtbox_draw2.clear()
                         p2_hitbox_draw.clear()
                     screen.update()
-                    if not keyboard.is_pressed("escape"):
+                    if not (keyboard.is_pressed("escape") or keyboard.is_pressed("backspace")):
                         pause_release = True
-                    if keyboard.is_pressed("escape") and pause_release:
+                    if (keyboard.is_pressed("escape") or keyboard.is_pressed("backspace")) and pause_release:
                         pause_release = False
                         paused = False
                     pause_val = pause_update(pause_ui, controlsList, training_settings)
@@ -1653,9 +1653,9 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
                         pause_ui.shape("menu/training_pause_1.gif")
                     else:
                         pause_ui.shape("menu/pause_1.gif")
-                    if not keyboard.is_pressed("escape"):
+                    if not (keyboard.is_pressed("escape") or keyboard.is_pressed("backspace")):
                         pause_release = True
-                    if keyboard.is_pressed("escape") and pause_release:
+                    if (keyboard.is_pressed("escape") or keyboard.is_pressed("backspace")) and pause_release:
                         pause_release = False
                         paused = True
                     ui.update()
