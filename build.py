@@ -1,5 +1,3 @@
-from distutils.core import setup
-import py2exe
 import shutil
 import os
 
@@ -16,15 +14,13 @@ def empty_folder(folder):
 
 empty_folder(r'dist') #Empties the folder so we dont carry anything from prev builds
 #Moving all the assets!
-shutil.copytree(r"sprites", r"dist\sprites")
-shutil.copytree(r"reverse_sprites", r"dist\reverse_sprites")
-shutil.copytree(r"menu", r"dist\menu")
-shutil.copytree(r"text", r"dist\text")
-shutil.copy(r"default_controls.txt", r"dist\controls.txt")
 
+os.system("pyinstaller --noconsole main.py")
 
-setup( #Fancy py2exe compiler thing
-    options = {'py2exe': {'bundle_files': 1, 'compressed': True}},
-    windows = [{'script': "main.py"}],
-    zipfile = None,
-)
+shutil.copytree(r"sprites", r"dist\main\sprites")
+shutil.copytree(r"reverse_sprites", r"dist\main\reverse_sprites")
+shutil.copytree(r"sprites2", r"dist\main\sprites2")
+shutil.copytree(r"reverse_sprites2", r"dist\main\reverse_sprites2")
+shutil.copytree(r"menu", r"dist\main\menu")
+shutil.copytree(r"text", r"dist\main\text")
+shutil.copy(r"default_controls.txt", r"dist\main\controls.txt")
