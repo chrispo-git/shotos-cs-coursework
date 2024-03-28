@@ -46,6 +46,8 @@ def reverse():
                             new_img.append((152,0,183,255))
                         elif item == (47,47,47,255): #Belt
                             new_img.append((47,47,47,255))
+                        elif item == (183,119,71,255):#Skin
+                            new_img.append((89,47,17,255))
                         else:
                             new_img.append(item)
                     else:
