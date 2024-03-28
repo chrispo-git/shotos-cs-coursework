@@ -884,6 +884,13 @@ class player:
             if self.is_left == False and self.x > char_pos[-(self.playerNum)][0]:
                 self.is_left = True
                 self.set_new_anim_by_ID()
+            if self.x == char_pos[-(self.playerNum)][0]:
+                if self.playerNum == 2:
+                    self.is_left = True
+                    self.set_new_anim_by_ID()
+                else:
+                    self.is_left = False
+                    self.set_new_anim_by_ID()
                 
     def check_block(self):
         #if self.isJump:
@@ -1228,7 +1235,7 @@ class player:
                 #Pushbox
                 left_pushbox = (char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x  < 105 and self.is_left == False
                 right_pushbox = self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])  < 105 and self.is_left
-                top_pushbox = self.y - (char_pos[-(self.playerNum)][1] + PUSHBOXES[2])  < 55
+                top_pushbox = self.y - (char_pos[-(self.playerNum)][1] + PUSHBOXES[2])  < 90
                 bottom_pushbox =  (char_pos[-(self.playerNum)][1] + PUSHBOXES[1]) - self.y  < 105
                 #if top_pushbox and bottom_pushbox:
                     #print(f"same height: [{(char_pos[-(self.playerNum)][0] - PUSHBOXES[0]) - self.x}, {self.x - (char_pos[-(self.playerNum)][0] + PUSHBOXES[0])}]")
@@ -1271,15 +1278,24 @@ class player:
             #print(char_pos)
 
 class battleUI:
-    def __init__(self, screen, p1Turtle, p2Turtle):
+    def __init__(self, screen, p1Turtle, p2Turtle, isTraining):
         self.screen = screen
         self.p1 = p1Turtle
         self.p2 = p2Turtle
         self.p1HP = turtle.Turtle()
         self.p2HP = turtle.Turtle()
+        self.p1Icon = turtle.Turtle()
+        self.p2Icon = turtle.Turtle()
+        self.isTraining = isTraining
         self.youWin = turtle.Turtle()
-        self.p1HpPos = [-200,150]
-        self.p2HpPos = [200,150]
+        self.p1HpPos = [-190,150]
+        self.p2HpPos = [180,150]
+        self.p1Icon.penup()
+        self.p2Icon.penup()
+        self.p1Icon.hideturtle()
+        self.p2Icon.hideturtle()
+        self.p1Icon.goto(-370, 185)
+        self.p2Icon.goto(360, 185)
         self.p1HP.penup()
         self.p2HP.penup()
         self.youWin.penup()
@@ -1294,7 +1310,7 @@ class battleUI:
         screen.tracer(10)
 
         self.hp_bar_length = 300
-        self.hp_start_x = 50
+        self.hp_start_x = 30
         self.hp_start_y = 175
         self.hp_bar_thickness = 2*SCALE
     
@@ -1302,41 +1318,50 @@ class battleUI:
         self.p1HP.clear()
         self.p2HP.clear()
         self.youWin.clear()
+        self.p1Icon.clear()
+        self.p2Icon.clear()
 
     def update_healthbar(self): #Updates health bar based on their health remaining
-        p1_hp_length = (self.p1.hp/stats.HEALTH[self.p1.char_id]) * self.hp_bar_length
+        p1_hp_length = (self.psss1.hp/stats.HEALTH[self.p1.char_id]) * self.hp_bar_length
         p2_hp_length = (self.p2.hp/stats.HEALTH[self.p2.char_id]) * self.hp_bar_length
+        offset = -5
         self.screen.tracer(0)
         self.p1HP.clear()
         self.p1HP.penup()
-        self.p1HP.goto(-self.hp_start_x, self.hp_start_y  - self.hp_bar_thickness)
+        self.p1HP.goto(-self.hp_start_x+offset, self.hp_start_y  - self.hp_bar_thickness)
         if self.p1.hp > 0:
             self.p1HP.fillcolor("cyan")
             self.p1HP.begin_fill()
-            self.p1HP.goto(-self.hp_start_x, self.hp_start_y + self.hp_bar_thickness)
-            self.p1HP.goto(-(self.hp_start_x + p1_hp_length), self.hp_start_y + self.hp_bar_thickness)
-            self.p1HP.goto(-(self.hp_start_x + p1_hp_length), self.hp_start_y  - self.hp_bar_thickness)
-            self.p1HP.goto(-(self.hp_start_x), self.hp_start_y  - self.hp_bar_thickness)
+            self.p1HP.goto(-self.hp_start_x +offset, self.hp_start_y + self.hp_bar_thickness)
+            self.p1HP.goto(-(self.hp_start_x + p1_hp_length) +offset, self.hp_start_y + self.hp_bar_thickness)
+            self.p1HP.goto(-(self.hp_start_x + p1_hp_length) +offset, self.hp_start_y  - self.hp_bar_thickness)
+            self.p1HP.goto(-(self.hp_start_x)+offset, self.hp_start_y  - self.hp_bar_thickness)
             self.p1HP.end_fill()
-        self.p1HP.goto(-(self.hp_start_x+ (self.hp_bar_length * 0.5)), self.hp_start_y)
+        self.p1HP.goto(-(self.hp_start_x+ (self.hp_bar_length * 0.5))+offset, self.hp_start_y)
         self.p1HP.shape("sprites/hpbar.gif")
         self.p1HP.stamp()
 
         self.p2HP.clear()
         self.p2HP.penup()
         if self.p2.hp > 0:
-            self.p2HP.goto(self.hp_start_x, self.hp_start_y)
+            self.p2HP.goto(self.hp_start_x+offset, self.hp_start_y)
             self.p2HP.fillcolor("red")
             self.p2HP.begin_fill()
-            self.p2HP.goto(self.hp_start_x, self.hp_start_y + self.hp_bar_thickness)
-            self.p2HP.goto((self.hp_start_x + p2_hp_length), self.hp_start_y + self.hp_bar_thickness)
-            self.p2HP.goto((self.hp_start_x + p2_hp_length), self.hp_start_y  - self.hp_bar_thickness)
-            self.p2HP.goto((self.hp_start_x), self.hp_start_y  - self.hp_bar_thickness)
+            self.p2HP.goto(self.hp_start_x+offset, self.hp_start_y + self.hp_bar_thickness)
+            self.p2HP.goto((self.hp_start_x + p2_hp_length)+offset, self.hp_start_y + self.hp_bar_thickness)
+            self.p2HP.goto((self.hp_start_x + p2_hp_length)+offset, self.hp_start_y  - self.hp_bar_thickness)
+            self.p2HP.goto((self.hp_start_x)+offset, self.hp_start_y  - self.hp_bar_thickness)
             self.p2HP.end_fill()
-        self.p2HP.goto((self.hp_start_x+ (self.hp_bar_length * 0.5)), self.hp_start_y)
+        self.p2HP.goto((self.hp_start_x+ (self.hp_bar_length * 0.5))+offset, self.hp_start_y)
         self.p2HP.shape("sprites/hpbar.gif")
         self.p2HP.stamp()
-
+        
+        self.p1Icon.clear()
+        self.p2Icon.clear()
+        self.p1Icon.shape(f"sprites/F0{self.p1.char_id}_Head.gif")
+        self.p1Icon.stamp()
+        self.p2Icon.shape(f"reverse_sprites/F0{self.p2.char_id}_Head.gif")
+        self.p2Icon.stamp()
         self.screen.update()
         self.screen.tracer(10)
     
@@ -1536,7 +1561,7 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
 
     youwin = False
 
-    ui = battleUI(screen, p1, p2)
+    ui = battleUI(screen, p1, p2, training_settings[0])
     
     ground = turtle.Turtle()
     ground.penup()
