@@ -36,16 +36,19 @@ def check_click_pos(x,y):
             try:
                 css.run([False,False,False,0,0]) #Runs the CSS with arguments that the CSS will pass onto the run_game module
             except Exception:
+                print(exc)
                 sys.exit() #Closes the game on errors so that it doesnt hang 
         elif x >= CPU[0] and x <= CPU[1]:
             try:
                 css.run([False,False,False,0,0],True)
             except Exception:
+                print(exc)
                 sys.exit()
         elif x >= TRAINING[0] and x <= TRAINING[1]:
             try:
                 css.run([True,True,False,0,0])
             except Exception:
+                print(exc)
                 sys.exit()
         elif x >= SETTINGS[0] and x <= SETTINGS[1]:
             is_controls = True

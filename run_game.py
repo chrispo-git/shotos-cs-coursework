@@ -80,6 +80,7 @@ hitbox_properties = [
 players_x = [0,0]
 players_y = [0,0]
 
+is_ditto = False
 
 
 #Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2]
@@ -313,11 +314,16 @@ class player:
 
     def animate(self):
         global JUMP_INITAL
+        global is_ditto
         anim = self.animList[self.animListID]
         anim_length = len(anim)
         sprite = anim[self.frame][0]
         if self.is_left == True:
             sprite = sprite.replace("sprites", "reverse_sprites") #If facing left, replace them with their reversed variant
+        
+        if self.playerNum == 2 and is_ditto:
+            sprite = sprite.replace("sprites/", "sprites2/")
+            sprite = sprite.replace("reverse_sprites/", "reverse_sprites2/")
         self.sprite = sprite
         #print(self.sprite)
         self.turtle.shape(self.sprite)
@@ -1322,7 +1328,9 @@ class battleUI:
         self.p2Icon.clear()
 
     def update_healthbar(self): #Updates health bar based on their health remaining
-        p1_hp_length = (self.psss1.hp/stats.HEALTH[self.p1.char_id]) * self.hp_bar_length
+        global is_ditto
+
+        p1_hp_length = (self.p1.hp/stats.HEALTH[self.p1.char_id]) * self.hp_bar_length
         p2_hp_length = (self.p2.hp/stats.HEALTH[self.p2.char_id]) * self.hp_bar_length
         offset = -5
         self.screen.tracer(0)
@@ -1360,7 +1368,10 @@ class battleUI:
         self.p2Icon.clear()
         self.p1Icon.shape(f"sprites/F0{self.p1.char_id}_Head.gif")
         self.p1Icon.stamp()
-        self.p2Icon.shape(f"reverse_sprites/F0{self.p2.char_id}_Head.gif")
+        if is_ditto:
+            self.p2Icon.shape(f"reverse_sprites2/F0{self.p2.char_id}_Head.gif")
+        else:
+            self.p2Icon.shape(f"reverse_sprites/F0{self.p2.char_id}_Head.gif")
         self.p2Icon.stamp()
         self.screen.update()
         self.screen.tracer(10)
@@ -1483,6 +1494,7 @@ class save_icon:
 def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
     global chars
     global cpus
+    global is_ditto
     chars = character
     cpus = cpu
     controlsList = get_controls_from_txt()
@@ -1497,7 +1509,7 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
     f = open("log.txt","w")
     f.write("")
     f.close()
-    for i in ["sprites", "reverse_sprites"]:
+    for i in ["sprites", "reverse_sprites", "sprites2", "reverse_sprites2"]:
         for root, dirs, files in os.walk(i):
             #print(files)
             for filename in files:
@@ -1510,6 +1522,11 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
         for filename in files:
             if filename.endswith(".gif"):
                 screen.addshape(f"menu/{filename}")
+    
+    if character[0] == character[1]:
+        is_ditto = True
+    else:
+        is_ditto = False
 
     screen.tracer(0)
     if training_settings[1] and training_settings[0]: #Hitbox/hurtbox drawing!
