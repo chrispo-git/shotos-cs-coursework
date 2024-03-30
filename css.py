@@ -16,7 +16,7 @@ SCREEN_HEIGHT = 450
 FRAME_LENGTH = 5.0
 SCALE = 5
 
-CHARACTER_AMOUNT = 3
+CHARACTER_AMOUNT = 4
 
 image_reverser.reverse()
 
@@ -40,7 +40,7 @@ def update(turtle, controls,char_pos_x,char_pos_y) -> int:
         x = turtle.xcor()
         y = turtle.ycor()
         for i in range(0, len(char_pos_x)):
-            if abs(char_pos_x[i]-x) < 50 and abs(char_pos_y[i]-y) < 50:
+            if abs(char_pos_x[i]-x) < 25 and abs(char_pos_y[i]-y) < 50:
                 return i #returns char_id based on cursort pos when accept button is pressed
     
     return -1

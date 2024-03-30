@@ -25,7 +25,9 @@ ANIMATION_LIST_LABEL = [
     "SpecialNEmpty",
     "SpecialS",
     "ThrowWhiff",
-    "ThrowF"
+    "ThrowF",
+    "SpecialAirN",
+    "SpecialAirNEmpty"
 ]
 
 

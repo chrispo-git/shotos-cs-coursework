@@ -21,7 +21,7 @@ image_reverser.reverse()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 450
 BOX_SIZE = [325, 360]
-FRAME_LENGTH = 60.0
+FRAME_LENGTH = 60.0 #Game runs at 16.667 fps
 
 #Character constants
 SCALE = 5
@@ -143,7 +143,7 @@ def draw_boxes(screen, p1hurt, p1hurt2, p1hit, p2hurt, p2hurt2, p2hit): #Used fo
     screen.update()
     screen.tracer(10)
         
-CHAR_ANIMS = [animations.RYU, animations.KEN, animations.SEAN]
+CHAR_ANIMS = [animations.RYU, animations.KEN, animations.SEAN, animations.AKUMA]
 #print(screen.getshapes())
 
 class player:
@@ -660,6 +660,23 @@ class player:
             if self.animListID in ACTIONABLE_LIST:
                     self.set_new_anim_by_ID(get_anim_ID("AttackAir"))
                     
+    def HeavyAir(self):
+        global ACTIONABLE_LIST
+        if not self.animListID == get_anim_ID("HeavyAir"):
+            return
+        
+        if self.char_id == 3: #Akuma Divekick
+            direction_mul = 1.0
+            if self.is_left:
+                direction_mul = -1.0
+
+            if self.frame > 3:
+                self.moveXThisFrame = 30 * direction_mul
+                self.moveYThisFrame = -90
+            else:
+                self.moveXThisFrame = 0
+                self.moveYThisFrame = 2
+                    
     def attackLw(self):
         global ACTIONABLE_LIST
         if not self.animListID == get_anim_ID("AttackLw"):
@@ -688,6 +705,18 @@ class player:
             
             if self.frame == 6:
                 self.moveXThisFrame = 25 * direction_mul
+        
+        if self.char_id == 3: #So akuma can kick
+            direction_mul = 1.0
+            if self.is_left:
+                direction_mul = -1.0
+
+            if self.frame < 4:
+                self.moveXThisFrame = 10 * direction_mul
+            elif self.frame == 4:
+                self.moveXThisFrame = 32 * direction_mul
+            elif self.frame < 8:
+                self.moveXThisFrame = 10 * direction_mul
 
 
     def heavy(self):
@@ -718,6 +747,8 @@ class player:
             if self.isJump:
                 if self.buttoncheck[1] or self.buttoncheck[0]: #Lets you specifically side special in the air!
                     self.set_new_anim_by_ID(get_anim_ID("SpecialS"))
+                elif self.char_id == 3 and self.y > 80 : #Akuma Air Fireball
+                    self.set_new_anim_by_ID(get_anim_ID("SpecialAirN"))
                 return
 
             if self.buttoncheck[3] and not self.buttoncheck[2]:
@@ -767,7 +798,7 @@ class player:
                 self.jumpDir = 0
                 self.moveYThisFrame = SPECIAL_LW_INIT_Y
                 self.moveXThisFrame = SPECIAL_LW_INIT_X*direction_mul
-            elif self.frame > 3:
+            elif self.frame > 4:
                 self.moveYThisFrame = self.lastmoveY - GRAVITY
                 self.moveXThisFrame = self.lastmoveX * 0.8
         if self.char_id == 2:
@@ -779,16 +810,27 @@ class player:
             elif self.frame > 3:
                 self.moveYThisFrame = self.lastmoveY - GRAVITY
                 self.moveXThisFrame = self.lastmoveX * 0.7
+        
+        if self.char_id == 3: 
+            if self.frame == 3:
+                self.isJump = True
+                self.jumpDir = 0
+                self.moveYThisFrame = SPECIAL_LW_INIT_Y
+                self.moveXThisFrame = SPECIAL_LW_INIT_X*direction_mul
+            elif self.frame > 3:
+                self.moveYThisFrame = self.lastmoveY - GRAVITY
+                self.moveXThisFrame = self.lastmoveX * 0.8
             
     def specialS(self):
+        direction_mul = 1.0
+        if self.is_left:
+            direction_mul = -1.0
+
         if self.animListID != get_anim_ID("SpecialS"):
             if self.char_id == 1:
                 self.disableJostle = False
             return
         
-        direction_mul = 1.0
-        if self.is_left:
-            direction_mul = -1.0
         
         if self.char_id == 0: #all these are character specific behaviours
             if self.isJump:
@@ -821,29 +863,54 @@ class player:
                         self.is_left = True
         if self.char_id == 2:
             self.moveXThisFrame = SPECIAL_S_X*direction_mul*1.2
+        if self.char_id == 3:
+            if not self.doPushback:
+                self.moveXThisFrame = SPECIAL_S_X*direction_mul
+            if self.frame < 2 and not self.isJump:
+                self.isJump = True
+                self.jumpDir = 0.0
+                self.moveYThisFrame = 45.0
 
     def specialN(self):
         # contains the projectile logic
-        if self.animListID != get_anim_ID("SpecialN"):
+        if self.animListID == get_anim_ID("SpecialS") and self.char_id == 3:
+            return
+
+        if self.animListID != get_anim_ID("SpecialN") and self.animListID != get_anim_ID("SpecialAirN"):
             self.hadouTimer = 0
             return
         
         if self.hadouTimer >= 1: # If you've hit the opponent with your projectile, switch to the version of the anim where the projectile sprite doesnt exist
-            self.set_new_anim_by_ID(get_anim_ID("SpecialNEmpty"), self.frame)
+            if self.isJump and self.char_id == 3:
+                self.set_new_anim_by_ID(get_anim_ID("SpecialAirNEmpty"), self.frame)
+            else:
+                self.set_new_anim_by_ID(get_anim_ID("SpecialNEmpty"), self.frame)
         if self.doPushback:
             self.hadouTimer += 1
+        
+        if self.animListID == get_anim_ID("SpecialAirN"):
+            if self.frame < 4:
+                self.moveYThisFrame = 0
+                self.moveXThisFrame*= 0.5
+            
                     
     def set_pushback(self):
         #Prevents these moves having pushback per character
-        if self.animListID == get_anim_ID("HeavyN") and self.char_id == 0:
+        if self.animListID == get_anim_ID("Heavy") and self.char_id == 0:
             return
         if self.animListID == get_anim_ID("AttackLw") and self.char_id == 2:
             return
         if self.animListID == get_anim_ID("HeavyLw") and self.char_id == 2:
             return
+        if self.animListID == get_anim_ID("Attack") and self.char_id == 3:
+            return
+        if self.animListID == get_anim_ID("Heavy") and self.char_id == 3:
+            return
         
 
-        if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack"), get_anim_ID("Heavy"), get_anim_ID("HeavyLw"), get_anim_ID("ThrowF")]:
+        if self.animListID in [get_anim_ID("AttackLw"), get_anim_ID("Attack"), get_anim_ID("Heavy"), get_anim_ID("HeavyLw"), get_anim_ID("ThrowF")] or (
+            (self.animListID in [get_anim_ID("SpecialS")] and self.char_id == 3)
+        ):
             side_mul = 1
             if self.is_left:
                 side_mul = -1
@@ -852,6 +919,9 @@ class player:
                 self.moveXThisFrame = PUSHBACK * side_mul * -1
                 if self.animListID == get_anim_ID("ThrowF"):
                    self.moveXThisFrame *= 0.7 
+                
+                if self.animListID == get_anim_ID("SpecialS") and self.char_id == 3:
+                    self.moveXThisFrame *= 0.8
 
 
                     
@@ -1061,6 +1131,7 @@ class player:
                     sys.exit()
 
             #Move specific code
+            self.HeavyAir()
             self.attackLw()
             self.heavyN()
             self.specialLw()
@@ -1716,14 +1787,15 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
                 if training_settings[0] and (p2.hp < 1 or p2HPRestore >= HP_RESTORE_DURATION):
                     p2.hp = stats.HEALTH[p2.char_id]
                     p2HPRestore = 0
-                if p1.decreaseHp == 0:
-                    p1HPRestore += 1
-                else:
-                    p1HPRestore = 0
-                if p2.decreaseHp == 0:
-                    p2HPRestore += 1
-                else:
-                    p2HPRestore = 0
+                if not(training_settings[2] and not keyboard.is_pressed("space")):
+                    if p1.decreaseHp == 0:
+                        p1HPRestore += 1
+                    else:
+                        p1HPRestore = 0
+                    if p2.decreaseHp == 0:
+                        p2HPRestore += 1
+                    else:
+                        p2HPRestore = 0
                 
                 p1.decreaseHp = 0
                 p2.decreaseHp = 0

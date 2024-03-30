@@ -50,6 +50,17 @@ def reverse():
                             new_img.append((89,47,17,255))
                         else:
                             new_img.append(item)
+                    elif "F03" in filename: #Akuma
+                        if item == (32,40,64,255): #Clothes
+                            new_img.append((63,63,63,255))
+                        elif item == (128,80,56,255):#Skin
+                            new_img.append((128,80,56,255))
+                        elif item == (224,56,48,255): #Hair
+                            new_img.append((255,246,183,255))
+                        elif item == (25,11,7,255):#Necklace
+                            new_img.append((255,204,109,255))
+                        else:
+                            new_img.append(item)
                     else:
                         new_img.append(item)
                 

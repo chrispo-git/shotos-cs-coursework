@@ -6,25 +6,25 @@ JAB_RANGE = 25
 
 POKE_RANGE = 35
 
-THEIR_POKE_RANGE = [26,28,40]
+THEIR_POKE_RANGE = [26,28,40,27]
 
 PROJECTILE_RANGE = 93
 
-THEIR_PROJECTILE_RANGE = [92,53,130]
+THEIR_PROJECTILE_RANGE = [92,53,130,92]
 
 #Moves types
-JAB = [get_anim_ID("Attack"),get_anim_ID("AttackLw"),get_anim_ID("Attack")]
-POKE = [get_anim_ID("AttackLw"),get_anim_ID("Attack"),get_anim_ID("AttackLw")]
-POKE2 = [get_anim_ID("AttackLw"),get_anim_ID("Heavy"),get_anim_ID("AttackLw")]
-ANTIAIR = [get_anim_ID("HeavyLw"),get_anim_ID("HeavyLw"),get_anim_ID("HeavyLw")]
-BIG = [get_anim_ID("Heavy"),get_anim_ID("SpecialN"),get_anim_ID("Heavy")]
-DP = [get_anim_ID("SpecialLw"),get_anim_ID("SpecialLw"),get_anim_ID("SpecialLw")]
-DP2 = [get_anim_ID("SpecialLw"),get_anim_ID("SpecialS"),get_anim_ID("SpecialLw")]
-TATSU = [get_anim_ID("SpecialS"),get_anim_ID("SpecialS"),get_anim_ID("SpecialS")]
-PROJECTILE = [get_anim_ID("SpecialN"),get_anim_ID("SpecialN"),get_anim_ID("SpecialN")]
+JAB = [get_anim_ID("Attack"),get_anim_ID("AttackLw"),get_anim_ID("Attack"),get_anim_ID("Attack")]
+POKE = [get_anim_ID("AttackLw"),get_anim_ID("Attack"),get_anim_ID("AttackLw"),get_anim_ID("AttackLw")]
+POKE2 = [get_anim_ID("AttackLw"),get_anim_ID("Heavy"),get_anim_ID("AttackLw"),get_anim_ID("Attack")]
+ANTIAIR = [get_anim_ID("HeavyLw"),get_anim_ID("HeavyLw"),get_anim_ID("HeavyLw"),get_anim_ID("SpecialS")]
+BIG = [get_anim_ID("Heavy"),get_anim_ID("SpecialN"),get_anim_ID("Heavy"),get_anim_ID("Heavy")]
+DP = [get_anim_ID("SpecialLw"),get_anim_ID("SpecialLw"),get_anim_ID("SpecialLw"),get_anim_ID("SpecialLw")]
+DP2 = [get_anim_ID("SpecialLw"),get_anim_ID("SpecialS"),get_anim_ID("SpecialLw"),get_anim_ID("SpecialLw")]
+TATSU = [get_anim_ID("SpecialS"),get_anim_ID("SpecialS"),get_anim_ID("SpecialS"),get_anim_ID("SpecialS")]
+PROJECTILE = [get_anim_ID("SpecialN"),get_anim_ID("SpecialN"),get_anim_ID("SpecialN"),get_anim_ID("SpecialN")]
 
-SPECIAL_CANCEL = [get_anim_ID("SpecialS"), get_anim_ID("SpecialN"), get_anim_ID("SpecialS")]
-SPECIAL_CANCEL_SAFE = [get_anim_ID("None"), get_anim_ID("SpecialS"), get_anim_ID("SpecialS")]
+SPECIAL_CANCEL = [get_anim_ID("SpecialS"), get_anim_ID("SpecialN"), get_anim_ID("SpecialS"), get_anim_ID("SpecialS")]
+SPECIAL_CANCEL_SAFE = [get_anim_ID("None"), get_anim_ID("SpecialS"), get_anim_ID("SpecialS"), get_anim_ID("None")]
 
 WALK_F = get_anim_ID("WalkF")
 WALK_B = get_anim_ID("WalkB")
