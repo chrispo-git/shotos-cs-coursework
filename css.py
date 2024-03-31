@@ -4,7 +4,6 @@ import sys
 import run_game
 import turtle
 import keyboard
-import image_reverser
 import menu
 from tkinter import PhotoImage
 from turtle import Shape
@@ -18,9 +17,13 @@ SCALE = 5
 
 CHARACTER_AMOUNT = 4
 
-image_reverser.reverse()
+MAX_ALTS = 4
 
-def update(turtle, controls,char_pos_x,char_pos_y) -> int:
+alt_change_delay = 0
+
+
+def update(turtle, controls,char_pos_x,char_pos_y) -> list:
+    global alt_change_delay
     if keyboard.is_pressed(controls[0]) and not keyboard.is_pressed(controls[1]): #Similar logic to left/right in run_game.py
         turtle.goto(turtle.xcor()-2, turtle.ycor())
 
@@ -34,19 +37,24 @@ def update(turtle, controls,char_pos_x,char_pos_y) -> int:
         turtle.goto(turtle.xcor(), turtle.ycor()-2)
     
     if keyboard.is_pressed(controls[5]): #Cancel button is the heavy button
-        return None
+        return [None,None]
+    
+    if keyboard.is_pressed(controls[6]) and alt_change_delay == 0: #Change Alt is Special Button
+        alt_change_delay = 15
+        return [-1,1]
     
     if keyboard.is_pressed(controls[4]): #Attack button is the light button
         x = turtle.xcor()
         y = turtle.ycor()
         for i in range(0, len(char_pos_x)):
             if abs(char_pos_x[i]-x) < 25 and abs(char_pos_y[i]-y) < 50:
-                return i #returns char_id based on cursort pos when accept button is pressed
+                return [i,None] #returns char_id based on cursort pos when accept button is pressed
     
-    return -1
+    return [-1,0]
 
 
 def run(training_settings=[False,False,False,0,0], cpu=False):
+    global alt_change_delay
     #Screen setup
     turtle.TurtleScreen._RUNNING=True
     screen = turtle.Screen()
@@ -54,11 +62,11 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
     screen.title("Shotos")
     screen.bgcolor("white")
     screen.clearscreen()
-    for i in ["sprites", "reverse_sprites"]:
+    for i in ["sprites", "reverse_sprites","sprites2", "reverse_sprites2","sprites3", "reverse_sprites3","sprites4", "reverse_sprites4"]:
         for root, dirs, files in os.walk(i):
             #print(files)
             for filename in files:
-                if filename.endswith(".gif"):
+                if filename.endswith("Idle_0.gif") or filename.endswith("Head.gif"):
                     #print(filename)
                     #Handles scaling up and stuff
                     larger = PhotoImage(file=f"{i}/{filename}").zoom(SCALE, SCALE)
@@ -70,6 +78,7 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
     screen.tracer(0)
     
     chosen_chars = [None,None]
+    chosen_alts = [0,0]
 
     bg = turtle.Turtle()
     bg.penup()
@@ -117,12 +126,19 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
     p2_cursor.goto(100,-50)
     p2_cursor.shape("menu/P1_Cursor.gif")
 
+    starter = turtle.Turtle()
+    starter.penup()
+    starter.goto(0,-80)
+    starter.shape("menu/start.gif")
+    starter.hideturtle()
+
     controls = get_controls_from_txt()
 
     if cpu: #If its a CPU randomly choose their character already! 
         rand_val = random.randint(0,CHARACTER_AMOUNT-1)
         print(rand_val)
         chosen_chars[1] = rand_val
+        chosen_alts[1] = random.randint(0,MAX_ALTS-1)
         p2_cursor.goto(char_pos_x[rand_val],char_pos_y[rand_val]-20)
     screen.update()
     prev_delay = 0
@@ -135,14 +151,45 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
                 start = time.time()
                 p1 = update(p1_cursor, controls[0], char_pos_x, char_pos_y)
                 p2 = update(p2_cursor, controls[1], char_pos_x, char_pos_y)
+                if p1[1] != 0:
+                    if p1[1] == None:
+                        chosen_alts[0] = 0
+                    else:
+                        chosen_alts[0] += 1
+                    if chosen_chars[0] == chosen_chars[1]:
+                        if chosen_alts[0] == chosen_alts[1]:
+                            chosen_alts[0] += 1
+                    if chosen_alts[0] >= MAX_ALTS:
+                        chosen_alts[0] = 0
+                    if chosen_chars[0] == chosen_chars[1]:
+                        if chosen_alts[0] == chosen_alts[1]:
+                            chosen_alts[0] += 1
 
-                if p1 != -1:
-                    chosen_chars[0] = p1
-                if p2 != -1:
-                    chosen_chars[1] = p2
+                if p2[1] != 0:
+                    if p2[1] == None:
+                        chosen_alts[1] = 0
+                    else:
+                        chosen_alts[1] += 1
+                    if chosen_chars[0] == chosen_chars[1]:
+                        if chosen_alts[0] == chosen_alts[1]:
+                            chosen_alts[1] += 1
+                    if chosen_alts[1] >= MAX_ALTS:
+                        chosen_alts[1] = 0
+                    if chosen_chars[0] == chosen_chars[1]:
+                        if chosen_alts[0] == chosen_alts[1]:
+                            chosen_alts[1] += 1
+
+                if p1[0] != -1:
+                    chosen_chars[0] = p1[0]
+                if p2[0] != -1:
+                    chosen_chars[1] = p2[0]
                 if chosen_chars[0] != None: #If they have a character selected, show that character
                     p1_show.showturtle()
-                    p1_show.shape(f"sprites/F0{chosen_chars[0]}_Idle_0.gif") #We can do this because the sprites are properly named!
+                    if chosen_alts[0] == 0:
+                        p1_show.shape(f"sprites/F0{chosen_chars[0]}_Idle_0.gif") #We can do this because the sprites are properly named!
+                    else:
+                        p1_show.shape(f"sprites{chosen_alts[0]+1}/F0{chosen_chars[0]}_Idle_0.gif") #We can do this because the sprites are properly named!
+
                     p1_name.showturtle()
                     p1_name.shape(f"menu/F0{chosen_chars[0]}_Name.gif")
                 else:
@@ -150,22 +197,24 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
                     p1_name.hideturtle()
                 if chosen_chars[1] != None:
                     p2_show.showturtle()
-                    p2_show.shape(f"reverse_sprites/F0{chosen_chars[1]}_Idle_0.gif")
+                    
+                    if chosen_alts[1] == 0:
+                        p2_show.shape(f"reverse_sprites/F0{chosen_chars[1]}_Idle_0.gif")
+                    else:
+                        p2_show.shape(f"reverse_sprites{chosen_alts[1]+1}/F0{chosen_chars[1]}_Idle_0.gif")
                     p2_name.showturtle()
                     p2_name.shape(f"menu/F0{chosen_chars[1]}_Name.gif")
                 else:
                     p2_show.hideturtle()
                     p2_name.hideturtle()
                 if None not in chosen_chars:
-                    screen.update()
-                    cancel = True
-                    for i in range(0,10):
-                        time.sleep(0.1)
-                        if keyboard.is_pressed(controls[0][5]) or keyboard.is_pressed(controls[1][5]):
-                            cancel = False
-                            break
-                    if cancel:
+                    starter.showturtle()
+                    if keyboard.is_pressed("space"):
                         break
+                else:
+                    starter.hideturtle()
+                if alt_change_delay > 0:
+                    alt_change_delay -= 1
                 screen.update()
                 if keyboard.is_pressed("escape"):
                     menu.run()
@@ -178,4 +227,4 @@ def run(training_settings=[False,False,False,0,0], cpu=False):
             #except Exception as exc:
                 #print(exc)
                 #sys.exit()
-    run_game.run(training_settings, chosen_chars, cpu)
+    run_game.run(training_settings, chosen_chars, chosen_alts, cpu)

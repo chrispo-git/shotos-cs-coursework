@@ -4,7 +4,6 @@ import time
 import keyboard
 from tkinter import PhotoImage
 from turtle import Shape
-import image_reverser
 import random
 import math
 import sys
@@ -15,7 +14,6 @@ import stats
 from util import get_anim_ID
 from util import get_controls_from_txt
 
-image_reverser.reverse()
 
 #CONSTANTS
 SCREEN_WIDTH = 800
@@ -80,7 +78,6 @@ hitbox_properties = [
 players_x = [0,0]
 players_y = [0,0]
 
-is_ditto = False
 
 
 #Format for Frames= ["sprites/frame.gif", [hurtbox x1, hurtbox x2, hurtbox y1, hurtbox y2]
@@ -155,6 +152,7 @@ class player:
         Left: bool,
         Training_settings: list,
         character: int,
+        alt: int,
         read_log = False,
         is_cpu = False
     ):
@@ -172,6 +170,7 @@ class player:
         self.frame = 0
         self.animList = CHAR_ANIMS[self.char_id]
         self.animListID = 0
+        self.alt = alt
         self.sprite = f"sprites/F0{self.char_id}_Idle_0.gif"
         self.training_settings = Training_settings
         self.start_blocking_now = 0
@@ -314,16 +313,15 @@ class player:
 
     def animate(self):
         global JUMP_INITAL
-        global is_ditto
         anim = self.animList[self.animListID]
         anim_length = len(anim)
         sprite = anim[self.frame][0]
         if self.is_left == True:
             sprite = sprite.replace("sprites", "reverse_sprites") #If facing left, replace them with their reversed variant
-        
-        if self.playerNum == 2 and is_ditto:
-            sprite = sprite.replace("sprites/", "sprites2/")
-            sprite = sprite.replace("reverse_sprites/", "reverse_sprites2/")
+
+        if self.alt != 0:
+            sprite = sprite.replace("sprites/", f"sprites{self.alt+1}/")
+            sprite = sprite.replace("reverse_sprites/", f"reverse_sprites{self.alt+1}/")
         self.sprite = sprite
         #print(self.sprite)
         self.turtle.shape(self.sprite)
@@ -670,7 +668,7 @@ class player:
             if self.is_left:
                 direction_mul = -1.0
 
-            if self.frame > 3:
+            if self.frame > 2:
                 self.moveXThisFrame = 30 * direction_mul
                 self.moveYThisFrame = -90
             else:
@@ -1399,7 +1397,6 @@ class battleUI:
         self.p2Icon.clear()
 
     def update_healthbar(self): #Updates health bar based on their health remaining
-        global is_ditto
 
         p1_hp_length = (self.p1.hp/stats.HEALTH[self.p1.char_id]) * self.hp_bar_length
         p2_hp_length = (self.p2.hp/stats.HEALTH[self.p2.char_id]) * self.hp_bar_length
@@ -1438,9 +1435,13 @@ class battleUI:
         self.p1Icon.clear()
         self.p2Icon.clear()
         self.p1Icon.shape(f"sprites/F0{self.p1.char_id}_Head.gif")
+        if self.p1.alt != 0:
+            self.p1Icon.shape(f"sprites{self.p1.alt+1}/F0{self.p1.char_id}_Head.gif")
+        else:
+            self.p1Icon.shape(f"sprites/F0{self.p1.char_id}_Head.gif")
         self.p1Icon.stamp()
-        if is_ditto:
-            self.p2Icon.shape(f"reverse_sprites2/F0{self.p2.char_id}_Head.gif")
+        if self.p2.alt != 0:
+            self.p2Icon.shape(f"reverse_sprites{self.p2.alt+1}/F0{self.p2.char_id}_Head.gif")
         else:
             self.p2Icon.shape(f"reverse_sprites/F0{self.p2.char_id}_Head.gif")
         self.p2Icon.stamp()
@@ -1457,14 +1458,16 @@ class battleUI:
             self.youWin.stamp()
 
 chars = []
+alternates = []
 cpus = False
 
 def rematch(x,y): #Another on click method for turtle screen awesome
     global chars
+    global alternates
     if abs(x) > 25:
         return
     if y > 13 and y < 40:
-        menu.run(True,chars,cpus)
+        menu.run(True,chars,alternates,cpus)
     if y > -60 and y < -33:
         menu.run()
 
@@ -1562,11 +1565,13 @@ class save_icon:
         run(new_training_settings, self.characters)
 
 
-def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
+def run(training_settings=[False,False,False,0,0], character=[0,0], alts=[0,0], cpu=False):
     global chars
+    global alternates
     global cpus
     global is_ditto
     chars = character
+    alternates = alts
     cpus = cpu
     controlsList = get_controls_from_txt()
     turtle.TurtleScreen._RUNNING=True
@@ -1580,19 +1585,34 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
     f = open("log.txt","w")
     f.write("")
     f.close()
-    for i in ["sprites", "reverse_sprites", "sprites2", "reverse_sprites2"]:
+    load_list = ["sprites", "reverse_sprites"]
+    for i in alts:
+        if i != 0:
+            load_list.append(f"sprites{i+1}")
+            load_list.append(f"reverse_sprites{i+1}")
+    print(load_list)
+    for i in load_list:
         for root, dirs, files in os.walk(i):
-            #print(files)
+                #print(files)
+                for filename in files:
+                    skip = True
+                    for x in character:
+                        if f"F0{x}_" in filename:
+                            skip = False
+                    for x in ["hpbar","win","Head"]:
+                        if x in filename:
+                            skip = False
+                    if skip:
+                        continue
+                    if filename.endswith(".gif"):
+                        #print(filename)
+                        #Handles scaling up and stuff
+                        larger = PhotoImage(file=f"{i}/{filename}").zoom(SCALE, SCALE)
+                        screen.addshape(f"{i}/{filename}", Shape("image", larger))
+        for root, dirs, files in os.walk("menu"):
             for filename in files:
                 if filename.endswith(".gif"):
-                    #print(filename)
-                    #Handles scaling up and stuff
-                    larger = PhotoImage(file=f"{i}/{filename}").zoom(SCALE, SCALE)
-                    screen.addshape(f"{i}/{filename}", Shape("image", larger))
-    for root, dirs, files in os.walk("menu"):
-        for filename in files:
-            if filename.endswith(".gif"):
-                screen.addshape(f"menu/{filename}")
+                    screen.addshape(f"menu/{filename}")
     
     if character[0] == character[1]:
         is_ditto = True
@@ -1629,7 +1649,8 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
         controlsList[0],
         False,
         training_settings,
-        character[0]
+        character[0],
+        alts[0]
     )
     p2 = player(
         2,
@@ -1638,7 +1659,8 @@ def run(training_settings=[False,False,False,0,0], character=[0,0], cpu=False):
         controlsList[1],
         True,
         training_settings,
-        character[1]
+        character[1],
+        alts[1]
     )
     if cpu:
         p2.isCpu = True
