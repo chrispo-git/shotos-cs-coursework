@@ -1,6 +1,6 @@
 # Shotos
 Computer Science coursework for A levels 2024. 
-Simple barebones fighting game featuring Rai-yu, Ben, and Shawn, the totally unique non-infringing fighters!
+Simple barebones fighting game featuring Rai-yu, Ben, Shawn and Apuma, the totally unique non-copyright-infringing fighters!
 Basically footsies with jumping, throws, and more moves everywhere
 Credits to hifight for the sprites for rai-yu
 
